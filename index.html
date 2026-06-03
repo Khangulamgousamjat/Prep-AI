@@ -1156,8 +1156,11 @@
       };
 
       // Auto check active Firebase Auth session state
+      console.log("Firebase auth object:", auth);
+      console.log("Firebase db object:", db);
       if (auth) {
         auth.onAuthStateChanged(user => {
+          console.log("Auth state changed. User:", user ? user.email : 'null (not logged in)');
           if (user) {
             currentUser = user;
             showLoadingSpinner("Fetching profile metadata...");
@@ -1173,6 +1176,7 @@
         });
       } else {
         // Safe sandbox default if firebase is blocked
+        console.error("Firebase auth is null — initialization failed!");
         showView('landing');
       }
 
@@ -1582,12 +1586,28 @@
       submitBtn.textContent = "Please wait...";
 
       try {
-        if (!auth) throw new Error("Firebase Authentication is offline.");
+        if (!auth) {
+          showToast("Firebase not initialized. Check console.", "error");
+          console.error("Auth object is null/undefined — Firebase failed to init.");
+          return;
+        }
         await auth.signInWithEmailAndPassword(email, password);
         showToast("Welcome back!", "success");
       } catch (err) {
-        console.error(err);
-        showToast("Invalid email or password. Please try again.", "error");
+        console.error("Firebase login error:", err.code, err.message);
+        // Show the real Firebase error code so we can diagnose
+        const errorMessages = {
+          'auth/unauthorized-domain': '🚫 Domain not authorized in Firebase. Add prep-ai-gk.vercel.app to Firebase Console → Auth → Authorized Domains.',
+          'auth/user-not-found': 'No account found with this email.',
+          'auth/wrong-password': 'Incorrect password. Please try again.',
+          'auth/invalid-email': 'Invalid email address format.',
+          'auth/too-many-requests': 'Too many failed attempts. Try again later.',
+          'auth/network-request-failed': 'Network error. Check your internet connection.',
+          'auth/invalid-credential': 'Invalid email or password. Please try again.',
+          'auth/user-disabled': 'This account has been disabled.'
+        };
+        const msg = errorMessages[err.code] || `Error [${err.code}]: ${err.message}`;
+        showToast(msg, "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Login";
