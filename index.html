@@ -3419,9 +3419,10 @@ Be helpful, educational, and encouraging. Keep responses concise (2-4 sentences)
     // ==========================================
     function getMockGeminiResponse(promptText) {
       console.warn("Google Gemini API key placeholder remains active or failed. Generating mock results.");
+      const pt = promptText.toLowerCase();
 
       // Check if prompt is a question explanation request
-      if (promptText.includes('Explain this interview question simply') || promptText.includes('Breakdown complex terminologies')) {
+      if (pt.includes('explain this interview question simply') || pt.includes('breakdown complex terminologies')) {
         const skill = (currentSession && currentSession.skill) || "Software Development";
         return `Here is a simple breakdown of the question:
 
@@ -3435,7 +3436,7 @@ This question tests your understanding of core concepts in ${skill}. In producti
       }
 
       // Check if prompt is an answer evaluation request
-      if (promptText.includes('evaluating an interview answer') || promptText.includes('Candidate\'s Answer')) {
+      if (pt.includes('evaluating an interview answer') || pt.includes("candidate's answer")) {
         return JSON.stringify({
           score: 8,
           verdict: "Good",
@@ -3447,7 +3448,7 @@ This question tests your understanding of core concepts in ${skill}. In producti
       }
 
       // Check if prompt is for the chatbot companion assistant
-      if (promptText.includes('helpful interview coach') || promptText.includes('candidate asks')) {
+      if (pt.includes('helpful interview coach') || pt.includes('candidate asks')) {
         const msgMatch = promptText.match(/candidate asks: "([^"]+)"/i);
         const msg = msgMatch ? msgMatch[1].toLowerCase() : "";
         const skill = (currentSession && currentSession.skill) || "Software Development";
@@ -3550,13 +3551,14 @@ This question tests your understanding of core concepts in ${skill}. In producti
         ]
       };
 
-      if (promptText.includes('generate exactly') || promptText.includes('expert technical interviewer')) {
-        const countMatch = promptText.match(/generate exactly (\d+)/i);
-        const count = countMatch ? parseInt(countMatch[1]) : 5;
+      // Question generation — matches both 'Generate exactly' and 'generate exactly'
+      if (pt.includes('generate exactly') || pt.includes('expert technical interviewer') || pt.includes('mcq') || pt.includes('interview questions for')) {
+        const countMatch = pt.match(/generate exactly (\d+)/);
+        const count = countMatch ? parseInt(countMatch[1]) : (practiceQuestionCount || 5);
         const skill = (practiceSelectedSkill || "Software Development").trim();
         const skillKey = skill.toLowerCase();
         
-        if (promptText.includes('Multiple Choice') || promptText.includes('MCQ') || practiceType === 'MCQ') {
+        if (pt.includes('multiple choice') || pt.includes('mcq') || practiceType === 'MCQ') {
           const MCQ_BANKS = {
             "python": [
               {
@@ -3789,7 +3791,7 @@ This question tests your understanding of core concepts in ${skill}. In producti
         return JSON.stringify(list);
       }
       
-      if (promptText.includes('evaluating an interview answer')) {
+      if (pt.includes('evaluating an interview answer')) {
         const answerMatch = promptText.match(/Candidate's Answer:\s*"([\s\S]*?)"/i) || promptText.match(/Answer:\s*"([\s\S]*?)"/i);
         const answer = answerMatch ? answerMatch[1] : "";
         const questionMatch = promptText.match(/Question:\s*"([\s\S]*?)"/i);
@@ -3828,7 +3830,7 @@ This question tests your understanding of core concepts in ${skill}. In producti
         });
       }
 
-      if (promptText.includes('Explain this interview question simply')) {
+      if (pt.includes('explain this interview question simply')) {
         return "The question is testing your practical and theoretical awareness of this topic. Structure your response starting with a simple definition, then give a code or real-world example, and finish with a comparison of alternatives.";
       }
 
