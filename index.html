@@ -1,0 +1,3817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrepAI — AI-Powered Interview Preparation</title>
+  <meta name="description" content="Practice real interview questions tailored to your skills. Get instant AI feedback, scoring, and improvement metrics with PrepAI.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Mobile Top Header Bar -->
+  <header class="mobile-header">
+    <div class="landing-logo text-green">
+      <i data-lucide="zap"></i> PrepAI
+    </div>
+    <button class="btn-icon" id="sidebar-toggle-btn" onclick="toggleMobileSidebar()">
+      <i data-lucide="menu"></i>
+    </button>
+  </header>
+
+  <!-- App Main Frame Wrapper -->
+  <div id="app-wrapper" class="no-sidebar">
+    
+    <!-- Sidebar Panel (visible post-login) -->
+    <aside id="app-sidebar" class="sidebar">
+      <div>
+        <div class="sidebar-logo text-green">
+          <i data-lucide="zap"></i> PrepAI
+        </div>
+        
+        <div class="sidebar-user">
+          <div class="user-avatar" id="sidebar-avatar">U</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-username">User Profile</div>
+            <div class="user-badge" id="sidebar-userstream">Computer Science</div>
+          </div>
+        </div>
+        
+        <ul class="sidebar-menu">
+          <li class="menu-item active" id="nav-dashboard">
+            <a href="#" onclick="navigateTo('dashboard', event)">
+              <i data-lucide="home"></i> Dashboard
+            </a>
+          </li>
+          <li class="menu-item" id="nav-start-practice">
+            <a href="#" onclick="navigateTo('start-practice', event)">
+              <i data-lucide="target"></i> Start Practice
+            </a>
+          </li>
+          <li class="menu-item" id="nav-progress">
+            <a href="#" onclick="navigateTo('progress', event)">
+              <i data-lucide="bar-chart-2"></i> My Progress
+            </a>
+          </li>
+          <li class="menu-item" id="nav-history">
+            <a href="#" onclick="navigateTo('history', event)">
+              <i data-lucide="file-text"></i> Session History
+            </a>
+          </li>
+          <li class="menu-item" id="nav-leaderboard">
+            <a href="#" onclick="navigateTo('leaderboard', event)">
+              <i data-lucide="trophy"></i> Leaderboard
+            </a>
+          </li>
+          <li class="menu-item" id="nav-settings">
+            <a href="#" onclick="navigateTo('settings', event)">
+              <i data-lucide="settings"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-logout" onclick="logoutCurrentUser()">
+        <i data-lucide="log-out"></i> Logout
+      </div>
+    </aside>
+
+    <!-- Main Views Content Container -->
+    <main id="main-content" class="main-content">
+      
+      <!-- ==========================================
+           VIEW 1 — LANDING PAGE
+           ========================================== -->
+      <div id="view-landing" class="view-section">
+        <div class="landing-canvas-container">
+          <canvas id="particles-canvas"></canvas>
+        </div>
+        
+        <nav class="landing-navbar">
+          <div class="landing-logo text-green">
+            <i data-lucide="zap"></i> PrepAI
+          </div>
+          <ul class="landing-nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#showcase">Skill Tracks</a></li>
+          </ul>
+          <div class="landing-nav-ctas">
+            <button class="btn-secondary" onclick="showView('login')">Login</button>
+            <button class="btn-primary" onclick="showView('register')">Get Started Free</button>
+          </div>
+        </nav>
+        
+        <section class="landing-hero">
+          <span class="badge badge-primary hero-badge bg-green-glow">
+            <i data-lucide="bot" style="width:14px;height:14px;"></i> Powered by Gemini AI
+          </span>
+          <h1 class="hero-heading">
+            Ace Every Interview With AI-Powered Practice
+            <div class="hero-glow-bg"></div>
+          </h1>
+          <p class="hero-subheading">
+            Practice real interview questions tailored to your skills. Get instant AI feedback, scoring, and improvement metrics. 100% free.
+          </p>
+          <div class="hero-ctas">
+            <button class="btn-primary" onclick="showView('register')">Start Practicing Free →</button>
+            <a href="#how-it-works" class="btn-secondary">Watch How It Works</a>
+          </div>
+          <div class="hero-bullets">
+            <span>✓ No credit card</span>
+            <span>✓ Free forever</span>
+            <span>✓ 50+ skill tracks</span>
+          </div>
+          
+          <div class="hero-visual">
+            <div class="mock-card-header">
+              <div class="mock-dots">
+                <span class="mock-dot" style="background:#ff5555"></span>
+                <span class="mock-dot" style="background:#ffaa00"></span>
+                <span class="mock-dot" style="background:#00cc66"></span>
+              </div>
+              <span class="badge badge-secondary" style="font-size:0.65rem;">System Design (Hard)</span>
+            </div>
+            <div class="mock-question">
+              "How would you design a distributed, real-time message broadcasting platform like WhatsApp?"
+            </div>
+            <div class="mock-answer">
+              "I would construct a WebSocket-based messaging pipeline backed by Redis Pub/Sub for routing. User presence lists can reside in a cache layer, and database writes for history could be queued asynchronously to avoid blocking the network thread..."
+            </div>
+            <div class="mock-feedback">
+              <div class="mock-score-circle">8.7</div>
+              <div>
+                <p style="font-weight:700;font-size:0.85rem;color:var(--accent-primary);">Good Answer! (Excellent Verdict)</p>
+                <p style="font-size:0.75rem;color:var(--text-secondary);">Strong points: Addressed async queues & Redis scalability. Needs improvements: Cover end-to-end encryption keys.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <section id="features" class="landing-features">
+          <h2 class="section-title">Designed to make you <span>Unstoppable</span></h2>
+          <div class="features-grid">
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="target"></i></div>
+              <h3 class="feature-name">Smart Question Generation</h3>
+              <p class="feature-desc">AI dynamically produces professional role-specific questions adjusting to your chosen skill profile and difficulty tier.</p>
+            </div>
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="award"></i></div>
+              <h3 class="feature-name">Instant AI Scoring</h3>
+              <p class="feature-desc">Every response is processed in real time against key evaluation metrics, yielding scores from 1 to 10 with key feedback points.</p>
+            </div>
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="brain"></i></div>
+              <h3 class="feature-name">Adaptive Learning</h3>
+              <p class="feature-desc">Tracks concepts or skills where you lose points and adapts suggestions to focus on resolving weak points.</p>
+            </div>
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="trending-up"></i></div>
+              <h3 class="feature-name">Progress Analytics</h3>
+              <p class="feature-desc">Examine detailed graphs, performance metrics, weekly active streaks, and history logs of all prep sessions.</p>
+            </div>
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="message-square"></i></div>
+              <h3 class="feature-name">AI Interview Coach</h3>
+              <p class="feature-desc">Chat live with a companion helper during your session. Request hints, conceptual explanations, or structure examples.</p>
+            </div>
+            <div class="feature-card card-surface card-hover-lift">
+              <div class="feature-icon"><i data-lucide="wifi-off"></i></div>
+              <h3 class="feature-name">API Offline Resilience</h3>
+              <p class="feature-desc">Never encounter network bottlenecks. Sandbox mocks run local question builders and chatbots automatically if offline.</p>
+            </div>
+          </div>
+        </section>
+        
+        <section id="how-it-works" class="landing-steps">
+          <h2 class="section-title">How <span>PrepAI</span> Works</h2>
+          <div class="steps-container">
+            <div class="step-card">
+              <div class="step-num">01</div>
+              <h3 class="step-title">Choose Your Skill</h3>
+              <p class="step-desc">Search from over 60+ hard and soft skill categories, or submit a custom skill config.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">02</div>
+              <h3 class="step-title">Answer AI Questions</h3>
+              <p class="step-desc">Respond to challenging scenario questions, request hints, or consult the conversational AI helper.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">03</div>
+              <h3 class="step-title">Get Evaluated + Improve</h3>
+              <p class="step-desc">Review inline suggestions, read detailed model answers, and save performance records.</p>
+            </div>
+          </div>
+        </section>
+        
+        <section id="showcase" class="landing-ticker-section">
+          <div class="ticker-container">
+            <div class="ticker-track" id="ticker-track-el">
+              <!-- JS populates skills scrolling track -->
+            </div>
+          </div>
+        </section>
+        
+        <footer class="landing-footer">
+          <div class="footer-content">
+            <div class="footer-logo text-green">
+              <i data-lucide="zap"></i> PrepAI
+            </div>
+            <ul class="footer-links">
+              <li><a href="#">Privacy</a></li>
+              <li><a href="#">Terms</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-credit">
+            <span class="footer-credit-left">© 2026 PrepAI Inc.</span>
+            <span class="footer-credit-center">Made with ❤️ Madiha</span>
+            <span class="footer-credit-right">All rights reserved.</span>
+          </div>
+        </footer>
+      </div>
+
+      <!-- ==========================================
+           VIEW 2 — REGISTER PAGE
+           ========================================== -->
+      <div id="view-register" class="view-section auth-view" style="display:none;">
+        <div class="auth-card card-glass">
+          <div class="auth-header">
+            <h2 class="auth-title">Create your account</h2>
+            <p class="auth-subtitle">Join thousands preparing smarter</p>
+          </div>
+          <form id="register-form" onsubmit="handleUserRegistration(event)">
+            <div class="input-group">
+              <label class="input-label" for="reg-name">Full Name</label>
+              <div class="input-wrapper">
+                <i data-lucide="user" class="input-icon"></i>
+                <input type="text" id="reg-name" class="input-field" placeholder="John Doe" required>
+              </div>
+              <div class="input-error" id="reg-name-error">Please enter your name</div>
+            </div>
+            
+            <div class="input-group">
+              <label class="input-label" for="reg-email">Email Address</label>
+              <div class="input-wrapper">
+                <i data-lucide="mail" class="input-icon"></i>
+                <input type="email" id="reg-email" class="input-field" placeholder="you@example.com" required>
+              </div>
+              <div class="input-error" id="reg-email-error">Invalid email address</div>
+            </div>
+            
+            <div class="input-group">
+              <label class="input-label" for="reg-stream">Stream / Domain</label>
+              <div class="input-wrapper">
+                <i data-lucide="book-open" class="input-icon"></i>
+                <select id="reg-stream" class="input-field" required>
+                  <option value="" disabled selected>Select your domain</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="MBA">MBA</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Design">Design</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="input-error" id="reg-stream-error">Please select a domain</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="reg-password">Password</label>
+              <div class="input-wrapper">
+                <i data-lucide="lock" class="input-icon"></i>
+                <input type="password" id="reg-password" class="input-field" placeholder="••••••••" required>
+                <i data-lucide="eye" class="input-toggle-password" onclick="togglePasswordVisibility('reg-password')"></i>
+              </div>
+              <div class="input-error" id="reg-pass-error">Min 6 characters required</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="reg-confirm-password">Confirm Password</label>
+              <div class="input-wrapper">
+                <i data-lucide="lock" class="input-icon"></i>
+                <input type="password" id="reg-confirm-password" class="input-field" placeholder="••••••••" required>
+              </div>
+              <div class="input-error" id="reg-confpass-error">Passwords do not match</div>
+            </div>
+
+            <button type="submit" class="btn-primary auth-btn-full" id="btn-register-submit">
+              Create Account
+            </button>
+          </form>
+          <div class="auth-footer">
+            Already have an account? <a href="#" onclick="showView('login')">Login →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 3 — LOGIN PAGE
+           ========================================== -->
+      <div id="view-login" class="view-section auth-view" style="display:none;">
+        <div class="auth-card card-glass">
+          <div class="auth-header">
+            <h2 class="auth-title">Welcome back</h2>
+            <p class="auth-subtitle">Continue your interview prep</p>
+          </div>
+          <form id="login-form" onsubmit="handleUserLogin(event)">
+            <div class="input-group">
+              <label class="input-label" for="login-email">Email Address</label>
+              <div class="input-wrapper">
+                <i data-lucide="mail" class="input-icon"></i>
+                <input type="email" id="login-email" class="input-field" placeholder="you@example.com" required>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="login-password">Password</label>
+              <div class="input-wrapper">
+                <i data-lucide="lock" class="input-icon"></i>
+                <input type="password" id="login-password" class="input-field" placeholder="••••••••" required>
+                <i data-lucide="eye" class="input-toggle-password" onclick="togglePasswordVisibility('login-password')"></i>
+              </div>
+            </div>
+
+            <a href="#" class="auth-forgot" onclick="handlePasswordReset()">Forgot password?</a>
+
+            <button type="submit" class="btn-primary auth-btn-full" id="btn-login-submit">
+              Login
+            </button>
+          </form>
+          <div class="auth-footer">
+            Don't have an account? <a href="#" onclick="showView('register')">Register →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 4 — DASHBOARD
+           ========================================== -->
+      <div id="view-dashboard" class="view-section" style="display:none;">
+        <div class="dashboard-header">
+          <div>
+            <h1 class="dashboard-title" id="dashboard-welcome">Welcome back, Prep 👋</h1>
+            <p class="dashboard-subtitle" id="dashboard-streak-sub">Ready to practice? You're on a 0-day streak! 🔥</p>
+          </div>
+          <span class="text-secondary" id="dashboard-date" style="font-size:0.9rem;">June 4, 2026</span>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="layers"></i></div>
+            <div>
+              <div class="stat-value" id="stat-sessions">0</div>
+              <div class="stat-label">Total Sessions</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="percent"></i></div>
+            <div>
+              <div class="stat-value" id="stat-avgscore">0%</div>
+              <div class="stat-label">Average Score</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="award"></i></div>
+            <div>
+              <div class="stat-value" id="stat-bestscore">0/10</div>
+              <div class="stat-label">Best Score</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="flame"></i></div>
+            <div>
+              <div class="stat-value" id="stat-streak">0</div>
+              <div class="stat-label">Current Streak</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-left">
+            
+            <!-- Quick Start Card -->
+            <div class="quickstart-card card-surface">
+              <h2 style="font-size:1.25rem; margin-bottom:16px;">Start a Quick Interview</h2>
+              
+              <div class="input-group autocomplete-container">
+                <label class="input-label">Choose Skill Track</label>
+                <div class="input-wrapper">
+                  <i data-lucide="search" class="input-icon"></i>
+                  <input type="text" id="dash-skill-input" class="input-field" placeholder="Search skill (e.g. Python, React, DSA...)" onkeyup="filterDashSkillSuggestions()" onfocus="showDashSuggestions()">
+                </div>
+                <ul class="autocomplete-list" id="dash-suggestions-box"></ul>
+              </div>
+
+              <div>
+                <label class="input-label" style="margin-bottom:4px;">Or Quick Select Popular</label>
+                <div class="tag-cloud" id="dash-tag-cloud">
+                  <!-- Tag chips rendered by JS -->
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+                <div>
+                  <label class="input-label">Difficulty</label>
+                  <div class="config-pills" id="dash-difficulty-pills">
+                    <button class="pill-btn active" onclick="setDashDifficulty('Easy')">Easy</button>
+                    <button class="pill-btn" onclick="setDashDifficulty('Medium')">Medium</button>
+                    <button class="pill-btn" onclick="setDashDifficulty('Hard')">Hard</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="input-label">Questions</label>
+                  <div class="config-pills" id="dash-questions-pills">
+                    <button class="pill-btn active" onclick="setDashQuestionCount(5)">5</button>
+                    <button class="pill-btn" onclick="setDashQuestionCount(10)">10</button>
+                    <button class="pill-btn" onclick="setDashQuestionCount(15)">15</button>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-primary" style="width:100%;" onclick="launchDashboardQuickInterview()">
+                Start Interview Now <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Recent Sessions Section -->
+            <div class="sessions-card card-surface">
+              <h2 style="font-size:1.25rem; margin-bottom:4px;">Recent Practice Sessions</h2>
+              <div class="session-list" id="dash-recent-sessions">
+                <!-- Session items rendered by JS -->
+              </div>
+            </div>
+
+          </div>
+
+          <div class="dashboard-right">
+            
+            <!-- Skill Breakdown Progress Section -->
+            <div class="skills-breakdown-card card-surface">
+              <h2 style="font-size:1.25rem; margin-bottom:16px;">Skill Analysis</h2>
+              <div id="dash-skills-breakdown-container">
+                <!-- Skill levels dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 5 — START PRACTICE (Full config page)
+           ========================================== -->
+      <div id="view-start-practice" class="view-section" style="display:none;">
+        <h1 style="font-size:2rem; margin-bottom:8px;">Choose Your Practice Track</h1>
+        <p class="text-secondary" style="margin-bottom:32px;">Configure your personalized mock interview simulation.</p>
+
+        <div class="practice-grid">
+          
+          <!-- Left Panel: Skill Selection -->
+          <div class="card-surface" style="padding:24px;">
+            <h2 style="font-size:1.2rem; margin-bottom:16px;">1. Select Topic Track</h2>
+            
+            <div class="input-group autocomplete-container">
+              <div class="input-wrapper">
+                <i data-lucide="search" class="input-icon"></i>
+                <input type="text" id="practice-skill-input" class="input-field" placeholder="Search from 60+ skill tracks..." onkeyup="filterPracticeSuggestions()" onfocus="showPracticeSuggestions()">
+              </div>
+              <ul class="autocomplete-list" id="practice-suggestions-box"></ul>
+            </div>
+
+            <div class="category-tabs" id="practice-category-tabs">
+              <!-- Tabs populated by JS -->
+            </div>
+
+            <div class="skills-grid" id="practice-skills-grid">
+              <!-- Skill blocks populated by JS -->
+            </div>
+          </div>
+
+          <!-- Right Panel: Configurations -->
+          <div class="card-surface config-box" style="padding:24px;">
+            <h2 style="font-size:1.2rem; margin-bottom:20px;">2. Configure Session</h2>
+            
+            <div style="margin-bottom:20px;">
+              <span class="input-label">Selected Track</span>
+              <div id="practice-selected-badge-wrapper" style="margin-top:8px;">
+                <span class="badge badge-secondary" style="font-size:0.9rem; padding:8px 16px; text-transform:none;">No skill chosen</span>
+              </div>
+              <div class="input-group" style="margin-top:12px; margin-bottom:0;">
+                <label class="input-label" style="font-size:0.75rem;">Or type a custom skill track</label>
+                <input type="text" id="practice-custom-skill-input" class="input-field" placeholder="e.g. Django, Microservices, HR Leadership" style="padding:10px 14px;" onkeyup="handleCustomPracticeSkill(this.value)">
+              </div>
+            </div>
+
+            <div style="margin-bottom:24px;">
+              <label class="input-label">Difficulty Tier</label>
+              <div class="difficulty-cards">
+                <div class="diff-card active" onclick="setPracticeDifficulty('Easy', this)">
+                  <div class="diff-card-title text-green">Easy</div>
+                  <div class="diff-card-desc">Basic core concepts, syntaxes, terminology, and fundamentals.</div>
+                </div>
+                <div class="diff-card" onclick="setPracticeDifficulty('Medium', this)">
+                  <div class="diff-card-title text-indigo">Medium</div>
+                  <div class="diff-card-desc">Problem-solving, architectural applications, and scenarios.</div>
+                </div>
+                <div class="diff-card" onclick="setPracticeDifficulty('Hard', this)">
+                  <div class="diff-card-title" style="color:var(--error);">Hard</div>
+                  <div class="diff-card-desc">System design, performance bottlenecks, edge-cases, and debugging.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:24px;">
+              <label class="input-label">Number of Questions</label>
+              <div class="config-pills" id="practice-question-pills">
+                <button class="pill-btn active" onclick="setPracticeQuestionCount(5)">5</button>
+                <button class="pill-btn" onclick="setPracticeQuestionCount(10)">10</button>
+                <button class="pill-btn" onclick="setPracticeQuestionCount(15)">15</button>
+                <button class="pill-btn" onclick="setPracticeQuestionCount(20)">20</button>
+              </div>
+            </div>
+
+            <div style="margin-bottom:28px;">
+              <label class="input-label">Interview Form</label>
+              <div class="config-pills" id="practice-type-pills">
+                <button class="pill-btn" onclick="setPracticeType('Technical')">Technical</button>
+                <button class="pill-btn" onclick="setPracticeType('Behavioral')">Behavioral</button>
+                <button class="pill-btn" onclick="setPracticeType('Mixed')">Mixed</button>
+                <button class="pill-btn active" onclick="setPracticeType('MCQ')">MCQ (Multiple Choice)</button>
+              </div>
+            </div>
+
+            <button class="btn-primary" style="width:100%;" id="practice-launch-btn" disabled onclick="launchConfigurePractice()">
+              Launch Mock Session 🚀
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 6 — INTERVIEW SCREEN
+           ========================================== -->
+      <div id="view-interview" class="view-section interview-view" style="display:none;">
+        <div class="interview-topbar">
+          <div class="interview-meta">
+            <button class="btn-icon" onclick="abortInterviewSession()"><i data-lucide="arrow-left"></i></button>
+            <div>
+              <span id="interview-skill-title" style="font-weight:700; font-size:1.15rem;">Python Development</span>
+              <span class="badge badge-secondary" id="interview-difficulty-badge" style="margin-left:8px;">Easy</span>
+            </div>
+          </div>
+          <div class="interview-progress-container">
+            <div class="progress-text" id="interview-q-progress">Question 1 of 5</div>
+            <div class="progress-track">
+              <div class="progress-bar-fill" id="interview-progress-bar-fill"></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="clock" class="text-muted" style="width:16px; height:16px;"></i>
+            <span id="interview-timer" style="font-family:'JetBrains Mono', monospace; font-size:1rem; font-weight:700;">00:00</span>
+          </div>
+        </div>
+
+        <div class="interview-layout">
+          
+          <!-- Left Main Area: Question & Answer Canvas -->
+          <div>
+            <div class="card-surface interview-main-card">
+              <div class="question-header">
+                <span class="badge badge-primary" id="interview-question-category">CONCEPTUAL</span>
+                <span class="text-secondary" style="font-size:0.85rem;" id="interview-question-index">Q1</span>
+              </div>
+              <div class="question-text" id="interview-question-text">
+                Loading question data...
+              </div>
+              <div class="question-actions">
+                <button onclick="toggleInterviewHint()"><i data-lucide="help-circle" style="width:14px;height:14px;"></i> Show Hint</button>
+                <button onclick="triggerExplainQuestion()"><i data-lucide="info" style="width:14px;height:14px;"></i> Explain Question</button>
+              </div>
+
+              <!-- Question Hint Container -->
+              <div class="question-hint-box" id="interview-hint-box">
+                <!-- Hint content injected -->
+              </div>
+
+              <textarea class="answer-textarea" id="interview-answer-textarea" placeholder="Type your answer here... Be thorough and explain your thinking. Show code structure if applicable." oninput="updateCharCount(this.value)"></textarea>
+              <div class="char-count" id="interview-char-count">0 characters</div>
+
+              <!-- MCQ Options Grid -->
+              <div id="interview-mcq-options-container" class="mcq-options-container"></div>
+
+              <div class="answer-actions">
+                <button class="btn-secondary" onclick="skipInterviewQuestion()">Skip Question ⏭️</button>
+                <button class="btn-primary" id="btn-submit-answer" onclick="submitInterviewAnswer()">Submit Answer ✅</button>
+              </div>
+
+              <!-- Evaluation Feedback Block -->
+              <div class="card-surface eval-card" id="interview-eval-card">
+                <div class="eval-header">
+                  <div>
+                    <div class="eval-verdict" id="eval-verdict-label">Good Work</div>
+                    <span class="text-secondary" style="font-size:0.85rem;">Evaluation Verdict</span>
+                  </div>
+                  <div class="eval-score-badge" id="eval-score-badge-label">8</div>
+                </div>
+
+                <div class="eval-section-title text-green">Strengths</div>
+                <ul class="eval-bullets" id="eval-strengths-list">
+                  <!-- Strengths items -->
+                </ul>
+
+                <div class="eval-section-title text-indigo" style="margin-top:16px;">Areas of Improvement</div>
+                <ul class="eval-bullets" id="eval-improvements-list">
+                  <!-- Improvements items -->
+                </ul>
+
+                <div class="eval-section-title text-indigo" style="margin-top:16px; cursor:pointer;" onclick="toggleModelAnswerVisibility()">
+                  Model Answer <span id="model-ans-indicator" style="font-size:0.75rem;">(Click to Expand)</span>
+                </div>
+                <div class="eval-model-answer" id="eval-model-answer-box">
+                  <!-- Model answer -->
+                </div>
+
+                <div class="eval-tip-box" id="eval-tip-box-el">
+                  <strong>Action Tip:</strong> Try structuring code examples next time.
+                </div>
+
+                <button class="btn-primary" style="margin-top:24px; width:100%;" id="btn-next-question" onclick="advanceInterviewNext()">
+                  Next Question →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar Area: AI Chat Companion -->
+          <div class="card-surface chat-card">
+            <div>
+              <h3 style="font-size:1.05rem; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border-default); padding-bottom:10px;">
+                <i data-lucide="bot" class="text-green"></i> AI Interview Coach
+              </h3>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages-container">
+              <div class="chat-msg chat-msg-bot">
+                Hello! I am your interview assistant. Feel free to ask me questions regarding this topic. I'm here to help guide your concepts!
+              </div>
+            </div>
+
+            <div>
+              <div class="chat-suggestions" id="chat-suggestions-container">
+                <span class="chat-suggestion-chip" onclick="sendSuggestionChat('Give me an example')">Give me an example</span>
+                <span class="chat-suggestion-chip" onclick="sendSuggestionChat('What are common mistakes?')">Common mistakes</span>
+                <span class="chat-suggestion-chip" onclick="sendSuggestionChat('How should I structure my answer?')">How to structure?</span>
+              </div>
+              <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chat-input-box" placeholder="Ask me anything..." onkeypress="handleChatEnter(event)">
+                <button class="chat-send-btn" onclick="sendUserChatMessage()"><i data-lucide="send" style="width:16px;height:16px;"></i></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 7 — RESULTS SCREEN
+           ========================================== -->
+      <div id="view-results" class="view-section" style="display:none;">
+        <div class="results-hero card-surface">
+          <div class="results-score-outer">
+            <div class="results-score-circle">
+              <span class="results-score-number" id="result-overall-score">0</span>
+              <span class="results-score-label">Average Score</span>
+            </div>
+          </div>
+          <h1 class="results-verdict" id="result-verdict-title">Great Performance! 🎉</h1>
+          <div class="results-meta">
+            <span id="result-meta-skill">JavaScript</span>
+            <span id="result-meta-difficulty">Medium</span>
+            <span id="result-meta-date">June 4, 2026</span>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <!-- Conic Donut Chart -->
+          <div class="chart-card card-surface">
+            <h3 class="chart-title"><i data-lucide="pie-chart" class="text-green"></i> Score Breakdown</h3>
+            <div class="donut-chart-container">
+              <div class="donut-chart" id="result-donut-chart-bg">
+                <div class="donut-hole" id="result-donut-score">0%</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Bar Chart -->
+          <div class="chart-card card-surface">
+            <h3 class="chart-title"><i data-lucide="bar-chart" class="text-indigo"></i> Scores per Question</h3>
+            <div class="bar-chart-container" id="result-bar-chart-container">
+              <!-- Injected bars -->
+            </div>
+          </div>
+        </div>
+
+        <div class="analysis-grid">
+          <div class="analysis-box card-surface" style="border-left: 3px solid var(--accent-primary);">
+            <h3 style="margin-bottom:12px; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="check-circle" class="text-green"></i> Overall Strengths
+            </h3>
+            <ul class="eval-bullets" id="result-strengths-analysis">
+              <!-- Strengths list -->
+            </ul>
+          </div>
+          <div class="analysis-box card-surface" style="border-left: 3px solid var(--error);">
+            <h3 style="margin-bottom:12px; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="alert-circle" style="color:var(--error);"></i> Recommendations
+            </h3>
+            <ul class="eval-bullets" id="result-improvements-analysis">
+              <!-- Recommendations list -->
+            </ul>
+          </div>
+        </div>
+
+        <h2 style="font-size:1.35rem; margin-bottom:20px;">Review Questions & Answers</h2>
+        <div class="accordion-list" id="result-accordion-container">
+          <!-- Accordion Q&A list -->
+        </div>
+
+        <div style="display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:60px;">
+          <div>
+            <button class="btn-secondary" onclick="retryCurrentInterviewTopic()"><i data-lucide="rotate-ccw"></i> Retry Same Topic</button>
+            <button class="btn-secondary" style="margin-left:12px;" onclick="showView('start-practice')"><i data-lucide="plus"></i> Try New Topic</button>
+          </div>
+          <button class="btn-primary" onclick="showView('dashboard')">Back to Dashboard</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 8 — SESSION HISTORY
+           ========================================== -->
+      <div id="view-history" class="view-section" style="display:none;">
+        <h1 style="font-size:2rem; margin-bottom:8px;">Session History</h1>
+        <p class="text-secondary" style="margin-bottom:32px;">Browse, filter, and review your previous mock interviews.</p>
+
+        <div class="filters-bar">
+          <select class="filter-select" id="history-filter-skill" onchange="applyHistoryFilters()">
+            <option value="ALL">All Skills</option>
+          </select>
+          
+          <select class="filter-select" id="history-filter-difficulty" onchange="applyHistoryFilters()">
+            <option value="ALL">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+          
+          <select class="filter-select" id="history-filter-date" onchange="applyHistoryFilters()">
+            <option value="ALL">All Time</option>
+            <option value="WEEK">This Week</option>
+            <option value="MONTH">This Month</option>
+          </select>
+
+          <select class="filter-select" id="history-sort" onchange="applyHistoryFilters()" style="margin-left:auto;">
+            <option value="DATE_DESC">Newest First</option>
+            <option value="SCORE_DESC">Highest Score</option>
+            <option value="SCORE_ASC">Lowest Score</option>
+          </select>
+        </div>
+
+        <div class="accordion-list" id="history-sessions-container">
+          <!-- Session histories rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 9 — MY PROGRESS
+           ========================================== -->
+      <div id="view-progress" class="view-section" style="display:none;">
+        <h1 style="font-size:2rem; margin-bottom:8px;">My Performance Progress</h1>
+        <p class="text-secondary" style="margin-bottom:32px;">Overview charts showing your score trends over time.</p>
+
+        <div class="stats-row">
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="clock"></i></div>
+            <div>
+              <div class="stat-value" id="prog-stat-time">0m</div>
+              <div class="stat-label">Practice Time</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="check-square"></i></div>
+            <div>
+              <div class="stat-value" id="prog-stat-questions">0</div>
+              <div class="stat-label">Questions Answered</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface">
+            <div class="stat-icon-wrapper"><i data-lucide="pie-chart"></i></div>
+            <div>
+              <div class="stat-value" id="prog-stat-average">0%</div>
+              <div class="stat-label">Avg. Session Score</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <!-- Trend Graph (SVG Polyline) -->
+          <div class="chart-card card-surface" style="grid-column: span 2;">
+            <h3 class="chart-title"><i data-lucide="trending-up" class="text-green"></i> Score Trend (Last 20 Sessions)</h3>
+            <div class="progress-trend-container" id="progress-trend-container-el">
+              <!-- SVG chart rendered via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Grid Heatmap -->
+        <div class="heatmap-card card-surface" style="margin-bottom:32px;">
+          <h3 class="chart-title"><i data-lucide="calendar" class="text-indigo"></i> Weekly Activity Grid</h3>
+          <div class="heatmap-grid" id="progress-heatmap-grid-el">
+            <!-- Weekly grid tiles loaded by JS -->
+          </div>
+        </div>
+
+        <div class="card-surface" style="padding:24px; margin-bottom:32px;">
+          <h3 class="chart-title"><i data-lucide="grid" class="text-green"></i> Skill Breakdown Matrix</h3>
+          <div style="overflow-x:auto;">
+            <table class="progress-table">
+              <thead>
+                <tr>
+                  <th>Skill Domain</th>
+                  <th>Sessions Run</th>
+                  <th>Best Score</th>
+                  <th>Average Score</th>
+                  <th>Performance Bar</th>
+                </tr>
+              </thead>
+              <tbody id="progress-skills-table-body">
+                <!-- Data populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Improvement Insights -->
+        <div class="card-surface" style="padding:24px; margin-bottom:60px;">
+          <h3 class="chart-title"><i data-lucide="info" class="text-indigo"></i> Performance Insights</h3>
+          <ul class="eval-bullets" id="progress-insights-list" style="list-style-type:square; list-style-position:inside;">
+            <li>No data records available yet. Start practicing to generate insights.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 10 — LEADERBOARD
+           ========================================== -->
+      <div id="view-leaderboard" class="view-section" style="display:none;">
+        <h1 style="font-size:2rem; margin-bottom:8px;">Leaderboard</h1>
+        <p class="text-secondary" style="margin-bottom:32px;">Compare performance stats against fellow users on PrepAI.</p>
+        
+        <div class="leaderboard-card card-surface" style="margin-bottom:60px;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Candidate</th>
+                <th>Domain Stream</th>
+                <th>Sessions Completed</th>
+                <th>Average Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <!-- Leaderboard rows generated dynamically -->
+            </tbody>
+          </table>
+          
+          <div id="leaderboard-user-rank-status" style="margin-top:24px; padding:16px; border-top:1px solid var(--border-default); font-weight:600;">
+            <!-- Current user's rank statement -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           VIEW 11 — SETTINGS
+           ========================================== -->
+      <div id="view-settings" class="view-section" style="display:none;">
+        <h1 style="font-size:2rem; margin-bottom:8px;">Settings</h1>
+        <p class="text-secondary" style="margin-bottom:32px;">Manage profiles, password details, and default application preferences.</p>
+
+        <div class="settings-grid">
+          
+          <!-- Profile settings -->
+          <div class="card-surface settings-section-card">
+            <h3 class="settings-section-title"><i data-lucide="user"></i> Personal Profile</h3>
+            <form onsubmit="saveProfileSettings(event)">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="settings-name">Display Name</label>
+                  <input type="text" id="settings-name" class="input-field" placeholder="Full Name" style="padding-left:14px;" required>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="settings-email">Email Address (Read-only)</label>
+                  <input type="email" id="settings-email" class="input-field" placeholder="Email" style="padding-left:14px; color:var(--text-muted);" readonly>
+                </div>
+              </div>
+              
+              <div class="input-group">
+                <label class="input-label" for="settings-stream">Stream / Domain</label>
+                <select id="settings-stream" class="input-field" style="padding-left:14px;" required>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="MBA">MBA</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Design">Design</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+          </div>
+
+          <!-- Security Settings -->
+          <div class="card-surface settings-section-card">
+            <h3 class="settings-section-title"><i data-lucide="lock"></i> Security & Password</h3>
+            <form onsubmit="saveSecuritySettings(event)">
+              <div class="input-group">
+                <label class="input-label" for="settings-currpass">Current Password</label>
+                <input type="password" id="settings-currpass" class="input-field" placeholder="••••••••" style="padding-left:14px;" required>
+              </div>
+              
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="settings-newpass">New Password</label>
+                  <input type="password" id="settings-newpass" class="input-field" placeholder="••••••••" style="padding-left:14px;" required>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="settings-confpass">Confirm New Password</label>
+                  <input type="password" id="settings-confpass" class="input-field" placeholder="••••••••" style="padding-left:14px;" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary">Update Password</button>
+            </form>
+          </div>
+
+          <!-- App Settings Preferences -->
+          <div class="card-surface settings-section-card">
+            <h3 class="settings-section-title"><i data-lucide="sliders"></i> Preferences</h3>
+            <div>
+              <div class="toggle-wrapper">
+                <div class="toggle-info">
+                  <div class="toggle-title">Show Hints by Default</div>
+                  <div class="toggle-desc">Automatically display question hints when answering inside active interviews.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pref-hints" onchange="savePreferences()">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-wrapper">
+                <div class="toggle-info">
+                  <div class="toggle-title">Auto-Save Practice Sessions</div>
+                  <div class="toggle-desc">Auto-save interview session stats to history logs immediately on completion.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pref-autosave" checked onchange="savePreferences()">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-wrapper" style="border-bottom:none;">
+                <div class="toggle-info">
+                  <div class="toggle-title">Offline Cache Redundancy</div>
+                  <div class="toggle-desc">Permit browser local storage logs when database queries drop.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pref-offline" checked onchange="savePreferences()">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Deletion Danger Zone -->
+          <div class="card-surface settings-section-card settings-danger-card" style="margin-bottom:60px;">
+            <h3 class="settings-section-title"><i data-lucide="alert-triangle"></i> Danger Zone</h3>
+            <p class="text-secondary" style="font-size:0.9rem; margin-bottom:20px;">
+              Deleting your account is permanent. It will instantly remove all your history, sessions, achievements, and user profile data from Firestore database structures.
+            </p>
+            <button class="btn-danger" onclick="triggerDeleteAccountModal()">Delete My Account</button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Reusable Toast notifications frame -->
+  <div id="toast-container"></div>
+
+  <!-- Reusable overlay Modal window frame -->
+  <div class="modal-overlay" id="app-modal">
+    <div class="modal-card">
+      <h3 class="modal-title" id="modal-title-el">
+        <i data-lucide="alert-circle" class="text-indigo"></i> Alert Dialog
+      </h3>
+      <div class="modal-body" id="modal-body-el">
+        Detailed modal window message description.
+      </div>
+      <div class="modal-actions" id="modal-actions-el">
+        <button class="btn-secondary" onclick="closeAppModal()">Cancel</button>
+        <button class="btn-primary" id="modal-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-screen global loading spinner -->
+  <div class="full-screen-loader" id="page-loader">
+    <div class="spinner"></div>
+    <div class="text-secondary" id="page-loader-text" style="font-size:0.95rem; font-weight:500;">Please wait...</div>
+  </div>
+
+  <!-- ==========================================
+       VANILLA JAVASCRIPT APPLICATION LOGIC
+       ========================================== -->
+
+<script>
+
+    // ==========================================
+    // API KEYS — CONFIGURATION PLACEMENT
+    // ==========================================
+    const GEMINI_API_KEY = "GEMINI_API_KEY_HERE";
+
+    const FIREBASE_CONFIG = {
+      apiKey: "FIREBASE_API_KEY_HERE",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "your-project-id",
+      storageBucket: "your-project.firebasestorage.app",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID",
+      measurementId: "G-XXXXXXXXXX"
+    };
+
+    // Initialize Firebase
+    try {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    } catch(e) {
+      console.warn("Firebase initialization skipped or failed. Using mock/local triggers.");
+    }
+    
+    let auth, db;
+    try {
+      auth = firebase.auth();
+      db = firebase.firestore();
+    } catch(e) {
+      console.warn("Auth/Firestore references missing.", e);
+    }
+
+    // ==========================================
+    // SKILLS DATABASE AND CONFIG DATA
+    // ==========================================
+    const ALL_SKILLS = [
+      "Python", "Java", "JavaScript", "C++", "C#", "Go", "Rust", "Swift", "Kotlin", "PHP", "Ruby", "TypeScript",
+      "React", "Angular", "Vue.js", "Next.js", "Node.js", "Express.js", "Django", "Flask", "Spring Boot", "FastAPI",
+      "HTML/CSS", "Tailwind CSS", "Bootstrap", "GraphQL", "REST API", "WebSockets",
+      "SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "Firebase", "SQLite", "Oracle",
+      "Data Structures", "Algorithms", "DSA", "Dynamic Programming", "System Design", "OOP", "Operating Systems", "Computer Networks", "DBMS",
+      "Machine Learning", "Deep Learning", "NLP", "Computer Vision", "Statistics", "Data Analysis", "Pandas", "NumPy", "TensorFlow", "PyTorch", "Scikit-learn",
+      "AWS", "Google Cloud", "Azure", "Docker", "Kubernetes", "CI/CD", "Linux", "Git", "DevOps", "Terraform",
+      "Product Management", "Agile", "Scrum", "Leadership", "Communication", "Teamwork", "Problem Solving", "Critical Thinking",
+      "MBA Finance", "Marketing Strategy", "Digital Marketing", "SEO", "Business Analytics", "Entrepreneurship",
+      "React Native", "Flutter", "iOS Development", "Android Development",
+      "Cybersecurity", "Ethical Hacking", "Network Security", "Blockchain"
+    ];
+
+    const SKILLS_BY_CATEGORY = {
+      "Programming": ["Python", "Java", "C++", "JavaScript", "Go", "Rust", "Swift", "Kotlin"],
+      "Web Dev": ["React", "Angular", "Vue.js", "Node.js", "HTML/CSS", "TypeScript", "Next.js", "GraphQL"],
+      "Database": ["SQL", "MySQL", "MongoDB", "PostgreSQL", "Redis", "Firebase"],
+      "CS Fundamentals": ["DSA", "OOP", "Operating Systems", "Computer Networks", "DBMS", "System Design"],
+      "HR & Soft Skills": ["Communication", "Leadership", "Teamwork", "Time Management", "Conflict Resolution"],
+      "Data Science": ["Machine Learning", "Deep Learning", "NLP", "Statistics", "Pandas", "TensorFlow"],
+      "Management": ["Product Management", "Agile", "MBA Finance", "Marketing Strategy"],
+      "Cloud & DevOps": ["AWS", "Docker", "Kubernetes", "Git", "CI/CD", "Linux"]
+    };
+
+    // ==========================================
+    // GLOBAL STATE MANAGEMENT VARIABLES
+    // ==========================================
+    let currentUser = null;
+    let userData = null;
+    let allSessions = [];
+    let currentSession = null;
+    let chatHistory = [];
+    
+    // Quickstart state variables
+    let dashSelectedSkill = "";
+    let dashDifficulty = "Easy";
+    let dashQuestionCount = 5;
+
+    // Start practice config state variables
+    let practiceSelectedSkill = "";
+    let practiceDifficulty = "Easy";
+    let practiceQuestionCount = 5;
+    let practiceType = "MCQ";
+
+    // ==========================================
+    // DYNAMIC BOOTSTRAP EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Build landing marquee scrolling list
+      populateMarqueeTicker();
+      
+      // Initialize dot background animation
+      initLandingParticles();
+      
+      // Load local config preferences
+      loadPreferencesFromLocalStorage();
+
+      // Configure window-level error tracking
+      window.onerror = function(msg, url, line) {
+        console.error("Caught error silently: ", msg, "at", url, ":", line);
+        return true; // suppresses alert dialogs
+      };
+
+      // Auto check active Firebase Auth session state
+      if (auth) {
+        auth.onAuthStateChanged(user => {
+          if (user) {
+            currentUser = user;
+            showLoadingSpinner("Fetching profile metadata...");
+            loadUserDataAndSync(user.uid);
+          } else {
+            currentUser = null;
+            userData = null;
+            allSessions = [];
+            document.getElementById('app-wrapper').className = "no-sidebar";
+            showView('landing');
+            hideLoadingSpinner();
+          }
+        });
+      } else {
+        // Safe sandbox default if firebase is blocked
+        showView('landing');
+      }
+
+      // Hotkey listener: Auto close modals on ESC
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeAppModal();
+        }
+      });
+    });
+
+    // ==========================================
+    // APP ROUTING & VIEW CONTROLLER
+    // ==========================================
+    function showView(viewId) {
+      // Hide all views
+      const views = document.querySelectorAll('.view-section');
+      views.forEach(view => view.style.display = 'none');
+
+      // Unhide target view
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) {
+        if (target.classList.contains('auth-view')) {
+          target.style.display = 'flex';
+        } else {
+          target.style.display = 'block';
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Close hamburger nav drawer if open
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar) sidebar.classList.remove('open');
+
+      // Adjust wrapper sidebar classes based on active view state
+      const appWrapper = document.getElementById('app-wrapper');
+      const sidebarViews = ['dashboard', 'start-practice', 'progress', 'history', 'leaderboard', 'settings'];
+      
+      if (currentUser && sidebarViews.includes(viewId)) {
+        appWrapper.className = ""; // show sidebar layout frame
+        updateSidebarMenuState(viewId);
+      } else {
+        appWrapper.className = "no-sidebar"; // fullscreen wrapper layout
+      }
+      
+      // Refresh dynamic components matching specific views
+      if (viewId === 'dashboard' && currentUser) {
+        renderDashboardStatsAndQuickstart();
+      } else if (viewId === 'start-practice' && currentUser) {
+        initStartPracticeView();
+      } else if (viewId === 'history' && currentUser) {
+        loadHistoryViewData();
+      } else if (viewId === 'progress' && currentUser) {
+        loadProgressViewData();
+      } else if (viewId === 'leaderboard' && currentUser) {
+        loadLeaderboardData();
+      } else if (viewId === 'settings' && currentUser) {
+        loadSettingsViewData();
+      }
+      
+      // Refresh lucide icons rendering
+      setTimeout(() => {
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      }, 50);
+    }
+
+    function navigateTo(viewId, event) {
+      if (event) event.preventDefault();
+      showView(viewId);
+    }
+
+    function updateSidebarMenuState(viewId) {
+      const menuItems = document.querySelectorAll('.sidebar-menu .menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) activeNav.classList.add('active');
+    }
+
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar) {
+        sidebar.classList.toggle('open');
+      }
+    }
+
+    // ==========================================
+    // TOAST NOTIFICATIONS SYSTEM
+    // ==========================================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      
+      let icon = 'info';
+      let borderGlow = 'rgba(99, 102, 241, 0.3)';
+      if (type === 'success') {
+        icon = 'check-circle';
+        toast.style.borderLeft = '4px solid var(--accent-primary)';
+      } else if (type === 'error') {
+        icon = 'alert-triangle';
+        toast.style.borderLeft = '4px solid var(--error)';
+      } else if (type === 'warning') {
+        icon = 'alert-circle';
+        toast.style.borderLeft = '4px solid var(--warning)';
+      } else {
+        toast.style.borderLeft = '4px solid var(--accent-secondary)';
+      }
+
+      toast.innerHTML = `
+        <div class="toast-icon"><i data-lucide="${icon}"></i></div>
+        <div class="toast-content">${message}</div>
+        <div class="toast-close" onclick="this.parentElement.remove()"><i data-lucide="x" style="width:16px;height:16px;"></i></div>
+      `;
+
+      container.appendChild(toast);
+      
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons({attrs: {class: 'toast-icon-svg'}});
+      }
+
+      // Animation triggers
+      setTimeout(() => toast.classList.add('show'), 50);
+      
+      // Auto-removal timing
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // ==========================================
+    // MODAL DIALOG CONTROLLER
+    // ==========================================
+    function showAppModal(title, body, confirmText, onConfirmCallback) {
+      const overlay = document.getElementById('app-modal');
+      const titleEl = document.getElementById('modal-title-el');
+      const bodyEl = document.getElementById('modal-body-el');
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+
+      titleEl.innerHTML = `<i data-lucide="alert-circle" class="text-green" style="width:20px;height:20px;"></i> ${title}`;
+      bodyEl.textContent = body;
+      confirmBtn.textContent = confirmText;
+      
+      // Bind callback listener
+      confirmBtn.onclick = () => {
+        onConfirmCallback();
+        closeAppModal();
+      };
+
+      overlay.classList.add('open');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function closeAppModal() {
+      const overlay = document.getElementById('app-modal');
+      if (overlay) overlay.classList.remove('open');
+    }
+
+    // ==========================================
+    // INTERMEDIARY LOADERS
+    // ==========================================
+    function showLoadingSpinner(text = "Please wait...") {
+      const loader = document.getElementById('page-loader');
+      const label = document.getElementById('page-loader-text');
+      label.textContent = text;
+      loader.classList.add('show');
+    }
+
+    function hideLoadingSpinner() {
+      const loader = document.getElementById('page-loader');
+      loader.classList.remove('show');
+    }
+
+    // ==========================================
+    // PROFILE STREAK COMPARISON LOGIC
+    // ==========================================
+    function processUserStreakCalculation(docData) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastActiveStr = docData.lastActive || "";
+      
+      if (lastActiveStr === todayStr) {
+        return docData.streak || 0;
+      }
+      
+      // Calculate day difference
+      const today = new Date(todayStr);
+      const lastActive = new Date(lastActiveStr);
+      const diffTime = Math.abs(today - lastActive);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      let updatedStreak = docData.streak || 0;
+      if (diffDays === 1) {
+        updatedStreak += 1;
+      } else if (diffDays > 1) {
+        updatedStreak = 1; // Streak broken, resets to 1 active day today
+      }
+      
+      // Update streak metadata in Firestore
+      if (db && currentUser) {
+        db.collection('users').doc(currentUser.uid).update({
+          streak: updatedStreak,
+          lastActive: todayStr
+        }).catch(err => console.warn("Streak sync failed. Silenced.", err));
+      }
+      
+      return updatedStreak;
+    }
+
+    // ==========================================
+    // FIREBASE AUTH & USER PROFILE CONTROL
+    // ==========================================
+    async function loadUserDataAndSync(uid) {
+      try {
+        if (!db) throw new Error("Firestore not initialized");
+        
+        let doc = await db.collection('users').doc(uid).get();
+        if (!doc.exists) {
+          // Re-create missing user entry fallback
+          const todayStr = new Date().toISOString().split('T')[0];
+          const newDoc = {
+            name: auth.currentUser.displayName || "Candidate User",
+            email: auth.currentUser.email,
+            stream: "Computer Science",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalSessions: 0,
+            totalScore: 0,
+            streak: 1,
+            lastActive: todayStr
+          };
+          await db.collection('users').doc(uid).set(newDoc);
+          doc = await db.collection('users').doc(uid).get();
+        }
+        
+        userData = doc.data();
+        userData.streak = processUserStreakCalculation(userData);
+        
+        // Sync history cache
+        try {
+          const snapshot = await db.collection('sessions').where('userId', '==', uid).orderBy('date', 'desc').get();
+          allSessions = snapshot.docs.map(s => ({ id: s.id, ...s.data() }));
+        } catch(e) {
+          console.warn("Failed sessions query. Utilizing localStorage fallback instead.", e);
+          allSessions = JSON.parse(localStorage.getItem(`sessions_${uid}`) || '[]');
+        }
+        
+        // Hydrate UI elements
+        updateSidebarUserProfileUI();
+        showView('dashboard');
+        showToast("Profile synced successfully!", "success");
+      } catch (err) {
+        console.error("Firestore sync failed. Loading mockup fallback states.", err);
+        // Sandbox mock profile initialization
+        userData = {
+          name: auth.currentUser ? auth.currentUser.displayName || "Offline Candidate" : "Offline Candidate",
+          email: auth.currentUser ? auth.currentUser.email : "candidate@prepai.local",
+          stream: "Computer Science",
+          totalSessions: 0,
+          totalScore: 0,
+          streak: 1,
+          lastActive: new Date().toISOString().split('T')[0]
+        };
+        allSessions = JSON.parse(localStorage.getItem(`sessions_offline`) || '[]');
+        
+        updateSidebarUserProfileUI();
+        showView('dashboard');
+        showToast("Offline mode. Local data storage initialized.", "warning");
+      } finally {
+        hideLoadingSpinner();
+      }
+    }
+
+    function updateSidebarUserProfileUI() {
+      const nameEl = document.getElementById('sidebar-username');
+      const streamEl = document.getElementById('sidebar-userstream');
+      const avatarEl = document.getElementById('sidebar-avatar');
+
+      if (userData) {
+        nameEl.textContent = userData.name;
+        streamEl.textContent = userData.stream;
+        
+        // Initials avatar
+        const initials = userData.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        avatarEl.textContent = initials || "U";
+      }
+    }
+
+    // ==========================================
+    // AUTH VIEWS FUNCTIONALITIES
+    // ==========================================
+    function togglePasswordVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      const icon = field.nextElementSibling;
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        field.type = 'password';
+        icon.setAttribute('data-lucide', 'eye');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    async function handleUserRegistration(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const stream = document.getElementById('reg-stream').value;
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+      
+      // Inline Validations
+      let valid = true;
+      if (!name) {
+        document.getElementById('reg-name-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('reg-name-error').style.display = 'none';
+      }
+      
+      if (!email.match(/^\S+@\S+\.\S+$/)) {
+        document.getElementById('reg-email-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('reg-email-error').style.display = 'none';
+      }
+
+      if (!stream) {
+        document.getElementById('reg-stream-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('reg-stream-error').style.display = 'none';
+      }
+
+      if (password.length < 6) {
+        document.getElementById('reg-pass-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('reg-pass-error').style.display = 'none';
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById('reg-confirm-password').focus();
+        document.getElementById('reg-confpass-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('reg-confpass-error').style.display = 'none';
+      }
+
+      if (!valid) return;
+
+      const submitBtn = document.getElementById('btn-register-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Please wait...";
+
+      try {
+        if (!auth) throw new Error("Firebase Authentication is unavailable.");
+        
+        const credentials = await auth.createUserWithEmailAndPassword(email, password);
+        await credentials.user.updateProfile({ displayName: name });
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        const userPayload = {
+          name,
+          email,
+          stream,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          totalSessions: 0,
+          totalScore: 0,
+          streak: 1,
+          lastActive: todayStr
+        };
+        
+        if (db) {
+          await db.collection('users').doc(credentials.user.uid).set(userPayload);
+        } else {
+          localStorage.setItem(`profile_${credentials.user.uid}`, JSON.stringify(userPayload));
+        }
+
+        showToast("Registration successful!", "success");
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "Registration failed.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Create Account";
+      }
+    }
+
+    async function handleUserLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) return;
+
+      const submitBtn = document.getElementById('btn-login-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Please wait...";
+
+      try {
+        if (!auth) throw new Error("Firebase Authentication is offline.");
+        await auth.signInWithEmailAndPassword(email, password);
+        showToast("Welcome back!", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Invalid email or password. Please try again.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Login";
+      }
+    }
+
+    function logoutCurrentUser() {
+      if (auth) {
+        auth.signOut()
+          .then(() => showToast("Logged out successfully.", "info"))
+          .catch(err => showToast("Sign out failed.", "error"));
+      } else {
+        currentUser = null;
+        showView('landing');
+      }
+    }
+
+    async function handlePasswordReset() {
+      const email = document.getElementById('login-email').value.trim();
+      if (!email.match(/^\S+@\S+\.\S+$/)) {
+        showToast("Please enter a valid email address first to reset.", "warning");
+        return;
+      }
+      try {
+        if (!auth) throw new Error("Firebase Auth service unavailable.");
+        await auth.sendPasswordResetEmail(email);
+        showToast("Password reset email sent!", "success");
+      } catch (err) {
+        showToast(err.message || "Failed to trigger reset email.", "error");
+      }
+    }
+
+    // ==========================================
+    // VIEW 4 — DASHBOARD CONTROLS
+    // ==========================================
+    function renderDashboardStatsAndQuickstart() {
+      if (!userData) return;
+      
+      // Header details
+      const firstName = userData.name.split(' ')[0];
+      document.getElementById('dashboard-welcome').textContent = `Welcome back, ${firstName} 👋`;
+      document.getElementById('dashboard-streak-sub').textContent = `Ready to practice? You're on a ${userData.streak}-day streak! 🔥`;
+      document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      // Stats row
+      const count = allSessions.length;
+      document.getElementById('stat-sessions').textContent = count;
+      document.getElementById('stat-streak').textContent = userData.streak;
+
+      let avg = 0;
+      let best = 0;
+      if (count > 0) {
+        const total = allSessions.reduce((acc, curr) => acc + (curr.averageScore || 0), 0);
+        avg = Math.round(total / count);
+        best = Math.max(...allSessions.map(s => Math.max(...(s.scores || [0]))));
+      }
+      document.getElementById('stat-avgscore').textContent = `${avg}%`;
+      document.getElementById('stat-bestscore').textContent = `${best}/10`;
+
+      // Render Popular tags cloud
+      const cloud = document.getElementById('dash-tag-cloud');
+      cloud.innerHTML = '';
+      const popular = ["Python", "JavaScript", "React", "SQL", "DSA", "System Design", "Node.js", "AWS", "Communication", "Leadership"];
+      popular.forEach(skill => {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        if (dashSelectedSkill === skill) chip.classList.add('active');
+        chip.textContent = skill;
+        chip.onclick = () => selectDashboardTag(skill, chip);
+        cloud.appendChild(chip);
+      });
+
+      // Render Recent Sessions
+      const sessionsBox = document.getElementById('dash-recent-sessions');
+      sessionsBox.innerHTML = '';
+      if (allSessions.length === 0) {
+        sessionsBox.innerHTML = '<div class="text-secondary" style="font-size:0.9rem; text-align:center; padding:16px;">No practice history found. Start your first session!</div>';
+      } else {
+        allSessions.slice(0, 5).forEach((session, idx) => {
+          const row = document.createElement('div');
+          row.className = 'session-row';
+          
+          const dt = session.date && session.date.toDate ? session.date.toDate() : new Date();
+          const scorePercent = Math.round(session.averageScore || 0);
+
+          row.innerHTML = `
+            <div class="session-row-left">
+              <span class="session-row-title">${session.skill}</span>
+              <div class="session-row-meta">
+                <span class="badge badge-secondary" style="font-size:0.6rem; padding:2px 6px;">${session.difficulty}</span>
+                <span>${dt.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
+              </div>
+            </div>
+            <div class="session-row-right">
+              <span class="session-row-score ${scorePercent >= 80 ? 'text-green' : scorePercent >= 50 ? 'text-indigo' : 'text-muted'}">${scorePercent}%</span>
+              <button class="btn-secondary session-row-btn" onclick="reviewPreviousSession(${idx})">Review</button>
+            </div>
+          `;
+          sessionsBox.appendChild(row);
+        });
+      }
+
+      // Render Skill progress analysis bars (Top 5 skills)
+      const matrix = {};
+      allSessions.forEach(s => {
+        if (!matrix[s.skill]) matrix[s.skill] = [];
+        matrix[s.skill].push(s.averageScore || 0);
+      });
+
+      const skillAverages = Object.keys(matrix).map(sk => {
+        const avgScr = matrix[sk].reduce((a,b)=>a+b, 0) / matrix[sk].length;
+        return { skill: sk, avg: Math.round(avgScr) };
+      }).sort((a,b) => b.avg - a.avg).slice(0, 5);
+
+      const breakdownBox = document.getElementById('dash-skills-breakdown-container');
+      breakdownBox.innerHTML = '';
+      
+      if (skillAverages.length === 0) {
+        breakdownBox.innerHTML = '<div class="text-secondary" style="font-size:0.9rem; text-align:center; padding:16px;">Perform interviews to build performance statistics.</div>';
+      } else {
+        skillAverages.forEach(skAv => {
+          const bar = document.createElement('div');
+          bar.className = 'skill-progress-item';
+          bar.innerHTML = `
+            <div class="skill-progress-header">
+              <span>${skAv.skill}</span>
+              <span style="font-weight:600;">${skAv.avg}%</span>
+            </div>
+            <div class="skill-progress-bar">
+              <div class="skill-progress-fill" style="width: ${skAv.avg}%"></div>
+            </div>
+          `;
+          breakdownBox.appendChild(bar);
+        });
+      }
+    }
+
+    function selectDashboardTag(skill, chipEl) {
+      document.querySelectorAll('#dash-tag-cloud .tag-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+      dashSelectedSkill = skill;
+      document.getElementById('dash-skill-input').value = skill;
+    }
+
+    function setDashDifficulty(diff) {
+      const parent = document.getElementById('dash-difficulty-pills');
+      parent.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent === diff) btn.classList.add('active');
+      });
+      dashDifficulty = diff;
+    }
+
+    function setDashQuestionCount(count) {
+      const parent = document.getElementById('dash-questions-pills');
+      parent.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (parseInt(btn.textContent) === count) btn.classList.add('active');
+      });
+      dashQuestionCount = count;
+    }
+
+    function showDashSuggestions() {
+      const box = document.getElementById('dash-suggestions-box');
+      box.style.display = 'block';
+      filterDashSkillSuggestions();
+    }
+
+    function filterDashSkillSuggestions() {
+      const query = document.getElementById('dash-skill-input').value.toLowerCase();
+      const box = document.getElementById('dash-suggestions-box');
+      box.innerHTML = '';
+
+      const list = ALL_SKILLS.filter(s => s.toLowerCase().includes(query)).slice(0, 8);
+      list.forEach(skill => {
+        const li = document.createElement('li');
+        li.className = 'autocomplete-item';
+        li.textContent = skill;
+        li.onclick = () => {
+          document.getElementById('dash-skill-input').value = skill;
+          dashSelectedSkill = skill;
+          box.style.display = 'none';
+          
+          // Sync active state on popular tags cloud if present
+          document.querySelectorAll('#dash-tag-cloud .tag-chip').forEach(chip => {
+            if (chip.textContent === skill) chip.classList.add('active');
+            else chip.classList.remove('active');
+          });
+        };
+        box.appendChild(li);
+      });
+      if (list.length === 0) {
+        box.style.display = 'none';
+      }
+    }
+
+    // Hide search suggestions on document body click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.autocomplete-container')) {
+        const dBox = document.getElementById('dash-suggestions-box');
+        const pBox = document.getElementById('practice-suggestions-box');
+        if (dBox) dBox.style.display = 'none';
+        if (pBox) pBox.style.display = 'none';
+      }
+    });
+
+    function launchDashboardQuickInterview() {
+      const typed = document.getElementById('dash-skill-input').value.trim();
+      if (!typed) {
+        showToast("Please choose or enter a skill track.", "warning");
+        return;
+      }
+      dashSelectedSkill = typed;
+      
+      // Load configurations into Start Practice variables
+      practiceSelectedSkill = dashSelectedSkill;
+      practiceDifficulty = dashDifficulty;
+      practiceQuestionCount = dashQuestionCount;
+      
+      if (practiceDifficulty === 'Easy' || practiceDifficulty === 'Medium') {
+        practiceType = "MCQ";
+      } else {
+        practiceType = "Technical";
+      }
+      
+      // Launch trigger
+      initiateInterviewSession();
+    }
+
+    // ==========================================
+    // VIEW 5 — START PRACTICE CONTROLS
+    // ==========================================
+    let currentPracticeCategory = "Programming";
+
+    function initStartPracticeView() {
+      // Build Category Tab headers
+      const tabsEl = document.getElementById('practice-category-tabs');
+      tabsEl.innerHTML = '';
+      
+      Object.keys(SKILLS_BY_CATEGORY).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `category-tab-btn ${currentPracticeCategory === cat ? 'active' : ''}`;
+        btn.textContent = cat;
+        btn.onclick = () => switchPracticeCategory(cat);
+        tabsEl.appendChild(btn);
+      });
+
+      renderPracticeSkillsGrid();
+      updatePracticeConfigRightPanel();
+    }
+
+    function switchPracticeCategory(cat) {
+      currentPracticeCategory = cat;
+      initStartPracticeView();
+    }
+
+    function renderPracticeSkillsGrid() {
+      const grid = document.getElementById('practice-skills-grid');
+      grid.innerHTML = '';
+
+      const list = SKILLS_BY_CATEGORY[currentPracticeCategory] || [];
+      list.forEach(skill => {
+        const card = document.createElement('div');
+        card.className = `skill-select-card ${practiceSelectedSkill === skill ? 'active' : ''}`;
+        card.innerHTML = `
+          ${skill}
+          <i data-lucide="check-circle" class="checkmark" style="width:14px; height:14px;"></i>
+        `;
+        card.onclick = () => selectPracticeSkill(skill);
+        grid.appendChild(card);
+      });
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function selectPracticeSkill(skill) {
+      practiceSelectedSkill = skill;
+      document.getElementById('practice-custom-skill-input').value = ""; // clear typed value
+      initStartPracticeView();
+    }
+
+    function handleCustomPracticeSkill(val) {
+      practiceSelectedSkill = val.trim();
+      
+      // Remove border checks from category skills grid
+      document.querySelectorAll('.skill-select-card').forEach(card => card.classList.remove('active'));
+      
+      updatePracticeConfigRightPanel();
+    }
+
+    function showPracticeSuggestions() {
+      const box = document.getElementById('practice-suggestions-box');
+      box.style.display = 'block';
+      filterPracticeSuggestions();
+    }
+
+    function filterPracticeSuggestions() {
+      const query = document.getElementById('practice-skill-input').value.toLowerCase();
+      const box = document.getElementById('practice-suggestions-box');
+      box.innerHTML = '';
+
+      const list = ALL_SKILLS.filter(s => s.toLowerCase().includes(query)).slice(0, 8);
+      list.forEach(skill => {
+        const li = document.createElement('li');
+        li.className = 'autocomplete-item';
+        li.textContent = skill;
+        li.onclick = () => {
+          practiceSelectedSkill = skill;
+          document.getElementById('practice-skill-input').value = "";
+          box.style.display = 'none';
+          
+          // Switch to corresponding category view if it belongs
+          for (let cat in SKILLS_BY_CATEGORY) {
+            if (SKILLS_BY_CATEGORY[cat].includes(skill)) {
+              currentPracticeCategory = cat;
+              break;
+            }
+          }
+          
+          initStartPracticeView();
+        };
+        box.appendChild(li);
+      });
+      if (list.length === 0) {
+        box.style.display = 'none';
+      }
+    }
+
+    function setPracticeDifficulty(diff, cardEl) {
+      document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('active'));
+      cardEl.classList.add('active');
+      practiceDifficulty = diff;
+      
+      if (diff === 'Easy' || diff === 'Medium') {
+        setPracticeType('MCQ');
+      } else {
+        setPracticeType('Technical');
+      }
+    }
+
+    function setPracticeQuestionCount(count) {
+      const parent = document.getElementById('practice-question-pills');
+      parent.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (parseInt(btn.textContent) === count) btn.classList.add('active');
+      });
+      practiceQuestionCount = count;
+    }
+
+    function setPracticeType(type) {
+      const parent = document.getElementById('practice-type-pills');
+      parent.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(type)) btn.classList.add('active');
+      });
+      practiceType = type;
+    }
+
+    function updatePracticeConfigRightPanel() {
+      const wrapper = document.getElementById('practice-selected-badge-wrapper');
+      const btn = document.getElementById('practice-launch-btn');
+
+      if (practiceSelectedSkill) {
+        wrapper.innerHTML = `<span class="badge badge-primary" style="font-size:0.95rem; padding:8px 16px; text-transform:none;">${practiceSelectedSkill}</span>`;
+        btn.disabled = false;
+      } else {
+        wrapper.innerHTML = `<span class="badge badge-secondary" style="font-size:0.9rem; padding:8px 16px; text-transform:none;">No skill chosen</span>`;
+        btn.disabled = true;
+      }
+    }
+
+    function launchConfigurePractice() {
+      initiateInterviewSession();
+    }
+
+    // ==========================================
+    // VIEW 6 — INTERVIEW SIMULATOR CORE
+    // ==========================================
+    let interviewQuestions = [];
+    let currentQuestionIndex = 0;
+    let interviewTimerInterval = null;
+    let secondsElapsedThisQuestion = 0;
+    let interviewAnswersCollected = [];
+    let isEvaluationPending = false;
+
+    async function initiateInterviewSession() {
+      // Enforce rules: Easy & Medium -> MCQ, Hard -> Technical
+      if (practiceDifficulty === 'Easy' || practiceDifficulty === 'Medium') {
+        practiceType = 'MCQ';
+      } else {
+        practiceType = 'Technical';
+      }
+
+      showLoadingSpinner(`🤖 Generating your personalized questions for ${practiceSelectedSkill}...`);
+      
+      let prompt = "";
+      if (practiceType === 'MCQ') {
+        prompt = `Generate ${practiceQuestionCount} MCQs for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY a JSON array, no markdown:\n[{"id":1,"question":"...","options":["A","B","C","D"],"correctAnswer":0,"hint":"...","explanation":"...","category":"conceptual"}]`;
+      } else {
+        prompt = `Generate ${practiceQuestionCount} ${practiceType} interview questions for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY JSON array:\n[{"id":1,"question":"...","hint":"...","category":"concept","expectedKeyPoints":["p1","p2"]}]`;
+      }
+
+      let success = false;
+      try {
+        const result = await fetchGeminiContent(prompt);
+        interviewQuestions = cleanAndParseJSON(result);
+        
+        if (!Array.isArray(interviewQuestions) || interviewQuestions.length === 0) {
+          throw new Error("Invalid or empty question structure fetched.");
+        }
+        success = true;
+      } catch (err) {
+        console.warn("Gemini failed question generation (first attempt):", err);
+        // Stricter format retry logic
+        try {
+          const strictPrompt = prompt + " STRICT COMPLIANCE REQUIRED: Output must strictly validate under JSON.parse().";
+          const retryResult = await fetchGeminiContent(strictPrompt);
+          interviewQuestions = cleanAndParseJSON(retryResult);
+          
+          if (!Array.isArray(interviewQuestions) || interviewQuestions.length === 0) {
+            throw new Error("Invalid or empty question structure fetched on retry.");
+          }
+          success = true;
+        } catch(retryErr) {
+          console.error("Gemini failed question generation (retry attempt):", retryErr);
+          
+          // Fall back gracefully to high-fidelity mock questions
+          showToast("Gemini API connection issue. Running mock sandbox interview session.", "warning");
+          try {
+            const mockResult = getMockGeminiResponse(prompt);
+            interviewQuestions = cleanAndParseJSON(mockResult);
+            success = true;
+          } catch (mockErr) {
+            console.error("Mock fallback failed:", mockErr);
+          }
+        }
+      }
+
+      if (success && Array.isArray(interviewQuestions) && interviewQuestions.length > 0) {
+        currentQuestionIndex = 0;
+        interviewAnswersCollected = [];
+        chatHistory = [];
+        
+        currentSession = {
+          skill: practiceSelectedSkill,
+          difficulty: practiceDifficulty,
+          totalQuestions: interviewQuestions.length,
+          type: practiceType,
+          questions: interviewQuestions,
+          answers: [],
+          timeTaken: 0
+        };
+
+        hideLoadingSpinner();
+        showView('interview');
+        loadInterviewQuestionDetails();
+      } else {
+        hideLoadingSpinner();
+        showToast("Could not generate interview questions. Please try again.", "error");
+      } finally {
+        hideLoadingSpinner();
+      }
+    }
+
+    function loadInterviewQuestionDetails() {
+      isEvaluationPending = false;
+      const question = interviewQuestions[currentQuestionIndex];
+      
+      // UI element adjustments
+      document.getElementById('interview-skill-title').textContent = currentSession.skill;
+      document.getElementById('interview-difficulty-badge').textContent = currentSession.difficulty;
+      document.getElementById('interview-q-progress').textContent = `Question ${currentQuestionIndex + 1} of ${currentSession.totalQuestions}`;
+      
+      const percentage = ((currentQuestionIndex) / currentSession.totalQuestions) * 100;
+      document.getElementById('interview-progress-bar-fill').style.width = `${percentage}%`;
+      
+      document.getElementById('interview-question-index').textContent = `Q${currentQuestionIndex + 1}`;
+      document.getElementById('interview-question-category').textContent = (question.category || "CONCEPTUAL").toUpperCase();
+      document.getElementById('interview-question-text').textContent = question.question;
+      
+      // Hide hints & evaluations
+      document.getElementById('interview-hint-box').style.display = 'none';
+      document.getElementById('interview-eval-card').style.display = 'none';
+      
+      // Enable textareas and clear entries / Render MCQ options
+      if (practiceType === 'MCQ') {
+        document.getElementById('interview-answer-textarea').style.display = 'none';
+        document.getElementById('interview-char-count').style.display = 'none';
+        
+        const mcqContainer = document.getElementById('interview-mcq-options-container');
+        mcqContainer.style.display = 'flex';
+        mcqContainer.innerHTML = '';
+        
+        let options = question.options || [];
+        if (options.length === 0) {
+          options = ["Option A", "Option B", "Option C", "Option D"];
+        }
+        
+        options.forEach((opt, idx) => {
+          const optLetter = ["A", "B", "C", "D"][idx] || String.fromCharCode(65 + idx);
+          const btn = document.createElement('button');
+          btn.className = 'mcq-option-btn';
+          btn.innerHTML = `<span class="mcq-option-badge">${optLetter}</span><span class="mcq-option-text">${escapeHtml(opt)}</span>`;
+          btn.onclick = () => {
+            if (document.getElementById('interview-eval-card').style.display === 'block') return; // disabled if already submitted
+            document.querySelectorAll('.mcq-option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            mcqContainer.dataset.selectedIdx = idx;
+            document.getElementById('btn-submit-answer').disabled = false;
+          };
+          mcqContainer.appendChild(btn);
+        });
+        
+        mcqContainer.dataset.selectedIdx = "";
+        document.getElementById('btn-submit-answer').disabled = true;
+      } else {
+        const textEl = document.getElementById('interview-answer-textarea');
+        textEl.style.display = 'block';
+        textEl.value = "";
+        textEl.disabled = false;
+        textEl.style.height = 'auto';
+        document.getElementById('interview-char-count').style.display = 'block';
+        updateCharCount("");
+        document.getElementById('interview-mcq-options-container').style.display = 'none';
+      }
+
+      // Re-enable actions buttons
+      document.getElementById('btn-submit-answer').style.display = 'inline-flex';
+      document.getElementById('btn-submit-answer').disabled = false;
+      document.getElementById('btn-submit-answer').textContent = "Submit Answer ✅";
+
+      // Reset chat companion logs
+      const msgBox = document.getElementById('chat-messages-container');
+      msgBox.innerHTML = `
+        <div class="chat-msg chat-msg-bot">
+          Hello! I am your companion bot helper. I have context regarding the current question: "${question.question}". Ask me anything!
+        </div>
+      `;
+
+      // Start elapsed timer triggers
+      secondsElapsedThisQuestion = 0;
+      updateTimerDisplay();
+      clearInterval(interviewTimerInterval);
+      interviewTimerInterval = setInterval(() => {
+        secondsElapsedThisQuestion++;
+        currentSession.timeTaken++;
+        updateTimerDisplay();
+      }, 1000);
+      
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(secondsElapsedThisQuestion / 60).toString().padStart(2, '0');
+      const seconds = (secondsElapsedThisQuestion % 60).toString().padStart(2, '0');
+      document.getElementById('interview-timer').textContent = `${minutes}:${seconds}`;
+    }
+
+    function updateCharCount(val) {
+      document.getElementById('interview-char-count').textContent = `${val.length} characters`;
+    }
+
+    function toggleInterviewHint() {
+      const box = document.getElementById('interview-hint-box');
+      const q = interviewQuestions[currentQuestionIndex];
+      box.textContent = q.hint || "Try listing down definitions, then step through application rules.";
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function triggerExplainQuestion() {
+      const q = interviewQuestions[currentQuestionIndex];
+      showLoadingSpinner("🤖 Synthesizing simple explanations...");
+      
+      const prompt = `Explain this interview question simply. Breakdown complex terminologies, explain the core concept, and outline how the candidate should tackle answering it.
+Question: "${q.question}"`;
+
+      try {
+        const text = await fetchGeminiContent(prompt);
+        hideLoadingSpinner();
+        
+        // Show explanation as bot chat assistant bubble
+        appendChatBubble(text, 'bot');
+        showToast("Explanation loaded in assistant sidebar.", "info");
+      } catch (err) {
+        hideLoadingSpinner();
+        showToast("Could not retrieve explanations.", "error");
+      }
+    }
+
+    async function submitInterviewAnswer() {
+      const q = interviewQuestions[currentQuestionIndex];
+
+      if (practiceType === 'MCQ') {
+        const mcqContainer = document.getElementById('interview-mcq-options-container');
+        const selectedIdx = parseInt(mcqContainer.dataset.selectedIdx);
+        if (isNaN(selectedIdx) || selectedIdx === null || selectedIdx === undefined) {
+          showToast("Please choose an option to submit.", "warning");
+          return;
+        }
+
+        clearInterval(interviewTimerInterval);
+        const submitBtn = document.getElementById('btn-submit-answer');
+        submitBtn.disabled = true;
+
+        const isCorrect = (selectedIdx === q.correctAnswer);
+
+        // Highlight options in UI
+        const buttons = mcqContainer.querySelectorAll('.mcq-option-btn');
+        buttons.forEach((btn, idx) => {
+          btn.disabled = true;
+          if (idx === q.correctAnswer) {
+            btn.classList.add('correct');
+          } else if (idx === selectedIdx && !isCorrect) {
+            btn.classList.add('incorrect');
+          }
+        });
+
+        const selectedLetter = ["A", "B", "C", "D"][selectedIdx] || String(selectedIdx);
+        const correctLetter = ["A", "B", "C", "D"][q.correctAnswer] || String(q.correctAnswer);
+
+        const feedback = {
+          score: isCorrect ? 10 : 0,
+          verdict: isCorrect ? "Excellent" : "Poor",
+          strengths: isCorrect 
+            ? ["Selected the correct option directly.", "Demonstrated precise conceptual understanding."] 
+            : ["Attempted the multiple-choice question."],
+          improvements: isCorrect 
+            ? ["No critical concept improvements required."] 
+            : [`Incorrect option selected (${selectedLetter}). Correct choice is ${correctLetter}.`, `Explanation: ${q.explanation || 'See explanation for details.'}`],
+          modelAnswer: `Correct Answer: Option ${correctLetter}) ${q.options[q.correctAnswer] || ''}\n\nExplanation: ${q.explanation || 'No detailed explanation provided.'}`,
+          tip: isCorrect 
+            ? "Excellent! Keep testing your recall speed." 
+            : "Review this specific terminology. Make a flashcard for future retention."
+        };
+
+        isEvaluationPending = true;
+        renderQuestionEvaluation(feedback, `Option ${selectedLetter}: ${q.options[selectedIdx]}`, false);
+        submitBtn.style.display = 'none';
+        return;
+      }
+
+      const ansText = document.getElementById('interview-answer-textarea').value.trim();
+      if (!ansText) {
+        showToast("Please enter an answer to evaluate, or click Skip.", "warning");
+        return;
+      }
+
+      // Freeze typing inputs
+      document.getElementById('interview-answer-textarea').disabled = true;
+      
+      const submitBtn = document.getElementById('btn-submit-answer');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "AI Evaluator loading...";
+
+      clearInterval(interviewTimerInterval);
+      
+      const evalPrompt = `Evaluate this ${currentSession.skill} interview answer (${currentSession.difficulty}).
+Q: "${q.question}"
+A: "${ansText}"
+Return ONLY JSON (no markdown): {"score":7,"verdict":"Good","strengths":["strength"],"improvements":["improvement"],"modelAnswer":"model answer here","tip":"tip here"}`;
+
+      try {
+        const response = await fetchGeminiContent(evalPrompt);
+        const feedback = cleanAndParseJSON(response);
+        
+        isEvaluationPending = true;
+        renderQuestionEvaluation(feedback, ansText, false);
+      } catch (err) {
+        console.error("Evaluation response parse collapsed:", err);
+        // Clean retry
+        try {
+          const retryPrompt = evalPrompt + " ONLY raw JSON response allowed.";
+          const retryResp = await fetchGeminiContent(retryPrompt);
+          const feedback = cleanAndParseJSON(retryResp);
+          
+          isEvaluationPending = true;
+          renderQuestionEvaluation(feedback, ansText, false);
+        } catch(retryErr) {
+          showToast("AI Evaluator timed out. Answer saved but score marked as average.", "error");
+          
+          const fallbackFeedback = {
+            score: 5,
+            verdict: "Average",
+            strengths: ["Submitted response for evaluation."],
+            improvements: ["AI evaluations timed out. Manual review suggested."],
+            modelAnswer: "Contact platform admin or retry prompt configurations.",
+            tip: "Keep detailed notes when AI fails queries."
+          };
+          isEvaluationPending = true;
+          renderQuestionEvaluation(fallbackFeedback, ansText, false);
+        }
+      } finally {
+        submitBtn.style.display = 'none';
+      }
+    }
+
+    function skipInterviewQuestion() {
+      clearInterval(interviewTimerInterval);
+      const q = interviewQuestions[currentQuestionIndex];
+
+      if (practiceType === 'MCQ') {
+        const mcqContainer = document.getElementById('interview-mcq-options-container');
+        const buttons = mcqContainer.querySelectorAll('.mcq-option-btn');
+        buttons.forEach((btn, idx) => {
+          btn.disabled = true;
+          if (idx === q.correctAnswer) {
+            btn.classList.add('correct');
+          }
+        });
+
+        const correctLetter = ["A", "B", "C", "D"][q.correctAnswer] || String(q.correctAnswer);
+
+        const feedback = {
+          score: 0,
+          verdict: "Poor",
+          strengths: ["No answer provided."],
+          improvements: ["Question skipped by user.", `Correct choice was Option ${correctLetter}.`],
+          modelAnswer: `Correct Answer: Option ${correctLetter}) ${q.options[q.correctAnswer] || ''}\n\nExplanation: ${q.explanation || 'No detailed explanation provided.'}`,
+          tip: "Try guessing even if you are unsure of the answer."
+        };
+
+        document.getElementById('btn-submit-answer').style.display = 'none';
+        renderQuestionEvaluation(feedback, "[Skipped]", true);
+        return;
+      }
+
+      const fallbackFeedback = {
+        score: 0,
+        verdict: "Poor",
+        strengths: ["No answer provided."],
+        improvements: ["Question skipped by user."],
+        modelAnswer: "Skipped question has no evaluations.",
+        tip: "Avoid skipping questions in active sessions."
+      };
+      
+      document.getElementById('interview-answer-textarea').value = "[Skipped]";
+      document.getElementById('interview-answer-textarea').disabled = true;
+      document.getElementById('btn-submit-answer').style.display = 'none';
+      
+      renderQuestionEvaluation(fallbackFeedback, "[Skipped]", true);
+    }
+
+    function renderQuestionEvaluation(feedback, originalAnswer, skipped = false) {
+      const score = feedback.score || 0;
+      const verdict = feedback.verdict || "Unscored";
+      
+      // Style badge according to score
+      const badge = document.getElementById('eval-score-badge-label');
+      badge.textContent = score;
+      badge.className = "eval-score-badge";
+      
+      if (score >= 9) badge.classList.add('badge-success');
+      else if (score >= 7) badge.style.color = 'var(--accent-primary)';
+      else if (score >= 5) badge.style.color = 'var(--warning)';
+      else badge.classList.add('badge-danger');
+
+      document.getElementById('eval-verdict-label').textContent = verdict;
+      
+      // Strengths & Improvements
+      const strengthsBox = document.getElementById('eval-strengths-list');
+      strengthsBox.innerHTML = '';
+      (feedback.strengths || []).forEach(st => {
+        strengthsBox.innerHTML += `<li><i data-lucide="check" class="text-green"></i> ${st}</li>`;
+      });
+      if ((feedback.strengths || []).length === 0) strengthsBox.innerHTML = '<li>None logged.</li>';
+
+      const improvementsBox = document.getElementById('eval-improvements-list');
+      improvementsBox.innerHTML = '';
+      (feedback.improvements || []).forEach(imp => {
+        improvementsBox.innerHTML += `<li><i data-lucide="arrow-right" class="text-indigo"></i> ${imp}</li>`;
+      });
+      if ((feedback.improvements || []).length === 0) improvementsBox.innerHTML = '<li>None logged.</li>';
+
+      // Model answer box details
+      document.getElementById('eval-model-answer-box').style.display = 'none';
+      document.getElementById('model-ans-indicator').textContent = "(Click to Expand)";
+      document.getElementById('eval-model-answer-box').textContent = feedback.modelAnswer || "";
+
+      // Action tips
+      document.getElementById('eval-tip-box-el').innerHTML = `<strong>Action Tip:</strong> ${feedback.tip || 'Review concepts daily.'}`;
+
+      // Save question statistics
+      const q = interviewQuestions[currentQuestionIndex];
+      interviewAnswersCollected.push({
+        questionId: q.id,
+        question: q.question,
+        answerText: originalAnswer,
+        score: score,
+        verdict: verdict,
+        strengths: feedback.strengths || [],
+        improvements: feedback.improvements || [],
+        modelAnswer: feedback.modelAnswer || "",
+        tip: feedback.tip || "",
+        skipped: skipped
+      });
+
+      // Show evaluation card
+      document.getElementById('interview-eval-card').style.display = 'block';
+      
+      // Adjust "Next Button" text for final page
+      const nextBtn = document.getElementById('btn-next-question');
+      if (currentQuestionIndex === currentSession.totalQuestions - 1) {
+        nextBtn.textContent = "Finish Interview 🏁";
+      } else {
+        nextBtn.textContent = "Next Question →";
+      }
+
+      setTimeout(() => {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }, 50);
+    }
+
+    function toggleModelAnswerVisibility() {
+      const box = document.getElementById('eval-model-answer-box');
+      const indicator = document.getElementById('model-ans-indicator');
+      if (box.style.display === 'none' || !box.style.display) {
+        box.style.display = 'block';
+        indicator.textContent = "(Click to Collapse)";
+      } else {
+        box.style.display = 'none';
+        indicator.textContent = "(Click to Expand)";
+      }
+    }
+
+    function advanceInterviewNext() {
+      if (currentQuestionIndex === currentSession.totalQuestions - 1) {
+        // Wrap and build results
+        currentSession.answers = interviewAnswersCollected;
+        
+        // Progress status updates
+        showView('results');
+        renderFinalResultsOverview();
+      } else {
+        currentQuestionIndex++;
+        loadInterviewQuestionDetails();
+      }
+    }
+
+    function abortInterviewSession() {
+      showAppModal(
+        "Abort Mock Session?", 
+        "If you exit the active mock interview, your progress stats and evaluation scores for the completed questions will be discarded.",
+        "Exit",
+        () => {
+          clearInterval(interviewTimerInterval);
+          showView('dashboard');
+        }
+      );
+    }
+
+    // ==========================================
+    // INTERVIEW CHAT COMPANION CONTROLS
+    // ==========================================
+    function handleChatEnter(e) {
+      if (e.key === 'Enter') sendUserChatMessage();
+    }
+
+    function sendSuggestionChat(suggestion) {
+      document.getElementById('chat-input-box').value = suggestion;
+      sendUserChatMessage();
+    }
+
+    async function sendUserChatMessage() {
+      const inputEl = document.getElementById('chat-input-box');
+      const msg = inputEl.value.trim();
+      if (!msg) return;
+
+      inputEl.value = '';
+      appendChatBubble(msg, 'user');
+
+      // Call Gemini Assistant API
+      const q = interviewQuestions[currentQuestionIndex];
+      const prompt = `You are a helpful interview coach. The candidate is currently answering interview questions about ${currentSession.skill} at ${currentSession.difficulty} level. Current question: "${q.question}". 
+
+The candidate asks: "${msg}"
+
+Be helpful, educational, and encouraging. Keep responses concise (2-4 sentences). Don't give away the full answer but help them think through it.`;
+
+      try {
+        appendChatBubble("Assistant is thinking...", 'bot', true);
+        const response = await fetchGeminiContent(prompt);
+        removeLoadingChatBubble();
+        appendChatBubble(response, 'bot');
+      } catch (err) {
+        removeLoadingChatBubble();
+        appendChatBubble("Coach service failed to compile response. Please try again.", 'bot');
+      }
+    }
+
+    function appendChatBubble(text, sender, isLoading = false) {
+      const container = document.getElementById('chat-messages-container');
+      const bubble = document.createElement('div');
+      bubble.className = `chat-msg ${sender === 'user' ? 'chat-msg-user' : 'chat-msg-bot'}`;
+      if (isLoading) bubble.id = 'chat-bot-loading-bubble';
+      bubble.textContent = text;
+      
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function removeLoadingChatBubble() {
+      const bubble = document.getElementById('chat-bot-loading-bubble');
+      if (bubble) bubble.remove();
+    }
+
+    // ==========================================
+    // VIEW 7 — RESULTS RENDERING & STORAGE
+    // ==========================================
+    function renderFinalResultsOverview() {
+      const totalScoreSum = currentSession.answers.reduce((a,b) => a + b.score, 0);
+      const avgScore = totalScoreSum / currentSession.totalQuestions; // score out of 10
+      const percentageScore = Math.round(avgScore * 10); // scale out of 100
+
+      // Counter animation
+      animateOverallScoreCounter(percentageScore);
+
+      // Metas
+      document.getElementById('result-meta-skill').textContent = currentSession.skill;
+      document.getElementById('result-meta-difficulty').textContent = currentSession.difficulty;
+      document.getElementById('result-meta-date').textContent = new Date().toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
+      });
+
+      // Verdict titles
+      const verdictEl = document.getElementById('result-verdict-title');
+      if (percentageScore >= 80) verdictEl.textContent = "Great Performance! 🎉";
+      else if (percentageScore >= 50) verdictEl.textContent = "Keep Practicing! 💪";
+      else verdictEl.textContent = "More Practice Needed 🎯";
+
+      // Render Donut
+      const donutBg = document.getElementById('result-donut-chart-bg');
+      donutBg.style.background = `conic-gradient(var(--accent-primary) 0% ${percentageScore}%, var(--border-default) ${percentageScore}% 100%)`;
+      document.getElementById('result-donut-score').textContent = `${percentageScore}%`;
+
+      // Render Bar Chart
+      const barContainer = document.getElementById('result-bar-chart-container');
+      barContainer.innerHTML = '';
+      currentSession.answers.forEach((ans, idx) => {
+        const heightVal = ans.score * 10;
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+        col.innerHTML = `
+          <div class="bar-fill" style="height: ${heightVal}px;"></div>
+          <span class="bar-label">Q${idx + 1}</span>
+        `;
+        barContainer.appendChild(col);
+      });
+
+      // Synthesize Strengths & Improvements overall list
+      const overallStrengths = [];
+      const overallImprovements = [];
+      
+      currentSession.answers.forEach((ans, idx) => {
+        if (ans.strengths && ans.strengths.length > 0) {
+          overallStrengths.push(`Q${idx + 1}: ${ans.strengths[0]}`);
+        }
+        if (ans.improvements && ans.improvements.length > 0) {
+          overallImprovements.push(`Q${idx + 1}: ${ans.improvements[0]}`);
+        }
+      });
+
+      const stList = document.getElementById('result-strengths-analysis');
+      stList.innerHTML = '';
+      overallStrengths.slice(0, 4).forEach(st => {
+        stList.innerHTML += `<li><i data-lucide="check" class="text-green"></i> ${st}</li>`;
+      });
+      if (overallStrengths.length === 0) stList.innerHTML = '<li>No general strengths identified.</li>';
+
+      const impList = document.getElementById('result-improvements-analysis');
+      impList.innerHTML = '';
+      overallImprovements.slice(0, 4).forEach(imp => {
+        impList.innerHTML += `<li><i data-lucide="arrow-right" class="text-indigo"></i> ${imp}</li>`;
+      });
+      if (overallImprovements.length === 0) impList.innerHTML = '<li>No general suggestions identified.</li>';
+
+      // Q&A Accordion review lists
+      const accordion = document.getElementById('result-accordion-container');
+      accordion.innerHTML = '';
+      currentSession.answers.forEach((ans, idx) => {
+        const item = document.createElement('div');
+        item.className = 'accordion-item';
+        item.innerHTML = `
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span class="accordion-title">
+              <span class="badge ${ans.score >= 8 ? 'badge-success' : ans.score >= 5 ? 'badge-warning' : 'badge-danger'}">${ans.score}/10</span>
+              Q${idx + 1}: ${ans.question}
+            </span>
+            <i data-lucide="chevron-down" class="accordion-icon"></i>
+          </div>
+          <div class="accordion-content">
+            <p style="font-weight:700; margin-bottom:8px;">Your Answer:</p>
+            <div class="mock-answer" style="background:#050505; color:var(--text-primary); border-color:var(--border-default);">${escapeHtml(ans.answerText)}</div>
+            
+            <p style="font-weight:700; margin-bottom:8px;">AI Critique:</p>
+            <div style="margin-bottom:16px;">
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:4px;"><strong>Feedback:</strong> ${ans.verdict}</p>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:4px;"><strong>Strengths:</strong> ${ans.strengths.join(', ')}</p>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:4px;"><strong>Improvements:</strong> ${ans.improvements.join(', ')}</p>
+            </div>
+
+            <p style="font-weight:700; margin-bottom:8px;">Model Answer:</p>
+            <div class="mock-answer" style="font-family:'DM Sans'; font-size:0.9rem;">${escapeHtml(ans.modelAnswer)}</div>
+          </div>
+        `;
+        accordion.appendChild(item);
+      });
+
+      // Auto save sessions
+      saveFinishedSessionToDatabase(percentageScore);
+
+      setTimeout(() => {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }, 50);
+    }
+
+    function animateOverallScoreCounter(target) {
+      const circleEl = document.getElementById('result-overall-score');
+      let currentVal = 0;
+      const interval = setInterval(() => {
+        if (currentVal >= target) {
+          circleEl.textContent = target;
+          clearInterval(interval);
+        } else {
+          currentVal += 2;
+          circleEl.textContent = Math.min(currentVal, target);
+        }
+      }, 15);
+    }
+
+    function toggleAccordion(headerEl) {
+      const content = headerEl.nextElementSibling;
+      const icon = headerEl.querySelector('.accordion-icon');
+      const isVisible = content.style.display === 'block';
+
+      // Hide active sibling accordion items
+      content.style.display = isVisible ? 'none' : 'block';
+      if (icon) {
+        if (isVisible) {
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          icon.style.transform = 'rotate(180deg)';
+        }
+      }
+    }
+
+    async function saveFinishedSessionToDatabase(percentageScore) {
+      const sessionPayload = {
+        userId: currentUser ? currentUser.uid : 'offline',
+        skill: currentSession.skill,
+        difficulty: currentSession.difficulty,
+        totalQuestions: currentSession.totalQuestions,
+        answeredQuestions: currentSession.answers.filter(a => !a.skipped).length,
+        scores: currentSession.answers.map(a => a.score),
+        totalScore: currentSession.answers.reduce((a,b) => a+b.score, 0),
+        averageScore: percentageScore,
+        timeTaken: currentSession.timeTaken,
+        date: firebase.firestore.FieldValue.serverTimestamp ? firebase.firestore.FieldValue.serverTimestamp() : new Date(),
+        answers: currentSession.answers
+      };
+
+      try {
+        if (!db) throw new Error("Firestore offline.");
+        
+        // Write Session
+        await db.collection('sessions').add(sessionPayload);
+
+        // Update User Profiles Metrics
+        const uid = currentUser.uid;
+        await db.collection('users').doc(uid).update({
+          totalSessions: firebase.firestore.FieldValue.increment(1),
+          totalScore: firebase.firestore.FieldValue.increment(percentageScore)
+        });
+
+        // Trigger local refetches
+        loadUserDataAndSync(uid);
+      } catch (err) {
+        console.warn("Database storage skipped. Initializing Offline Local Cache Backup.", err);
+        const cacheKey = currentUser ? `sessions_${currentUser.uid}` : 'sessions_offline';
+        
+        // Load, append & write local storage cache
+        const historyList = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+        
+        // Format Timestamp matching JS date object for offline redundancy
+        sessionPayload.date = new Date().toISOString();
+        historyList.unshift(sessionPayload);
+        localStorage.setItem(cacheKey, JSON.stringify(historyList));
+        
+        // Update mock state user records
+        if (userData) {
+          userData.totalSessions += 1;
+          userData.totalScore += percentageScore;
+        }
+        allSessions = historyList;
+        
+        showToast("Session auto-saved to local memory backup.", "success");
+      }
+    }
+
+    function retryCurrentInterviewTopic() {
+      // Launch identical config parameters
+      practiceSelectedSkill = currentSession.skill;
+      practiceDifficulty = currentSession.difficulty;
+      practiceQuestionCount = currentSession.totalQuestions;
+      practiceType = currentSession.type || "Technical";
+      initiateInterviewSession();
+    }
+
+    // ==========================================
+    // VIEW 8 — SESSION HISTORY CONTROLS
+    // ==========================================
+    function loadHistoryViewData() {
+      const skillFilterEl = document.getElementById('history-filter-skill');
+      const activeFilterSkill = skillFilterEl.value;
+
+      // Extract unique list of practiced skills
+      const uniqueSkills = [...new Set(allSessions.map(s => s.skill))];
+      skillFilterEl.innerHTML = '<option value="ALL">All Skills</option>';
+      uniqueSkills.forEach(s => {
+        skillFilterEl.innerHTML += `<option value="${s}" ${activeFilterSkill === s ? 'selected' : ''}>${s}</option>`;
+      });
+
+      applyHistoryFilters();
+    }
+
+    function applyHistoryFilters() {
+      const skill = document.getElementById('history-filter-skill').value;
+      const difficulty = document.getElementById('history-filter-difficulty').value;
+      const dateRange = document.getElementById('history-filter-date').value;
+      const sort = document.getElementById('history-sort').value;
+
+      let filtered = [...allSessions];
+
+      // Skill Filters
+      if (skill !== 'ALL') {
+        filtered = filtered.filter(s => s.skill === skill);
+      }
+
+      // Difficulty Filters
+      if (difficulty !== 'ALL') {
+        filtered = filtered.filter(s => s.difficulty === difficulty);
+      }
+
+      // Date filters
+      if (dateRange !== 'ALL') {
+        const now = new Date();
+        filtered = filtered.filter(s => {
+          const sDate = s.date && s.date.toDate ? s.date.toDate() : new Date(s.date);
+          const diffTime = Math.abs(now - sDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return dateRange === 'WEEK' ? diffDays <= 7 : diffDays <= 30;
+        });
+      }
+
+      // Sort
+      if (sort === 'DATE_DESC') {
+        // Date desc
+        filtered.sort((a,b) => {
+          const da = a.date && a.date.toDate ? a.date.toDate() : new Date(a.date);
+          const db = b.date && b.date.toDate ? b.date.toDate() : new Date(b.date);
+          return db - da;
+        });
+      } else if (sort === 'SCORE_DESC') {
+        filtered.sort((a,b) => b.averageScore - a.averageScore);
+      } else if (sort === 'SCORE_ASC') {
+        filtered.sort((a,b) => a.averageScore - b.averageScore);
+      }
+
+      renderHistorySessionsList(filtered);
+    }
+
+    function renderHistorySessionsList(list) {
+      const container = document.getElementById('history-sessions-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="card-surface" style="padding:40px; text-align:center;">
+            <p class="text-secondary" style="font-size:0.95rem; margin-bottom:16px;">No matching practice sessions found.</p>
+            <button class="btn-primary" onclick="showView('start-practice')">Launch First Session →</button>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach((session, idx) => {
+        const item = document.createElement('div');
+        item.className = 'accordion-item';
+        
+        const dt = session.date && session.date.toDate ? session.date.toDate() : new Date(session.date);
+        const timeFormatted = dt.toLocaleDateString('en-US', {
+          weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+        });
+
+        let answersAccordionContent = '';
+        (session.answers || []).forEach((ans, qIdx) => {
+          answersAccordionContent += `
+            <div style="margin-bottom:20px; border-bottom:1px solid var(--border-default); padding-bottom:16px;">
+              <p style="font-weight:700; font-size:0.9rem; margin-bottom:6px;">Q${qIdx + 1}: ${ans.question}</p>
+              <div class="mock-answer" style="background:#050505; color:var(--text-primary); margin-bottom:12px;">${escapeHtml(ans.answerText)}</div>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:4px;"><strong>Score:</strong> ${ans.score}/10 (${ans.verdict})</p>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:4px;"><strong>Model Answer:</strong> ${escapeHtml(ans.modelAnswer)}</p>
+            </div>
+          `;
+        });
+
+        item.innerHTML = `
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span class="accordion-title">
+              <span class="badge ${session.averageScore >= 80 ? 'badge-success' : session.averageScore >= 50 ? 'badge-warning' : 'badge-danger'}" style="font-size:0.8rem; padding:4px 8px;">${session.averageScore}%</span>
+              <strong>${session.skill}</strong> 
+              <span class="text-muted" style="font-size:0.8rem;">| ${session.difficulty} | ${timeFormatted}</span>
+            </span>
+            <i data-lucide="chevron-down" class="accordion-icon"></i>
+          </div>
+          <div class="accordion-content">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px dashed var(--border-default); padding-bottom:12px; font-size:0.85rem; color:var(--text-secondary);">
+              <span>Questions Answered: ${session.answeredQuestions} / ${session.totalQuestions}</span>
+              <span>Time Taken: ${Math.round(session.timeTaken / 60)} minutes</span>
+            </div>
+            ${answersAccordionContent}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function reviewPreviousSession(historyIndex) {
+      // Sets local config to session review structure
+      currentSession = allSessions[historyIndex];
+      showView('results');
+      renderFinalResultsOverview();
+    }
+
+    // ==========================================
+    // VIEW 9 — MY PROGRESS RENDERS (SVG Chart)
+    // ==========================================
+    function loadProgressViewData() {
+      // Sum aggregates
+      const totalSessionsCount = allSessions.length;
+      let totalQuestionsAnswered = 0;
+      let practiceTimeSec = 0;
+      let averageScoreOverall = 0;
+
+      allSessions.forEach(s => {
+        totalQuestionsAnswered += s.answeredQuestions || 0;
+        practiceTimeSec += s.timeTaken || 0;
+        averageScoreOverall += s.averageScore || 0;
+      });
+
+      const avgPerc = totalSessionsCount > 0 ? Math.round(averageScoreOverall / totalSessionsCount) : 0;
+      
+      document.getElementById('prog-stat-time').textContent = `${Math.round(practiceTimeSec / 60)}m`;
+      document.getElementById('prog-stat-questions').textContent = totalQuestionsAnswered;
+      document.getElementById('prog-stat-average').textContent = `${avgPerc}%`;
+
+      renderScoreTrendSVGLineGraph();
+      renderWeeklyActivityGridHeatmap();
+      renderSkillBreakdownPerformanceTable();
+      renderAIProgressInsightsList(avgPerc);
+    }
+
+    function renderScoreTrendSVGLineGraph() {
+      const container = document.getElementById('progress-trend-container-el');
+      container.innerHTML = '';
+
+      if (allSessions.length === 0) {
+        container.innerHTML = '<div class="text-secondary" style="text-align:center; padding:40px;">Complete session interviews to plot trend graphs.</div>';
+        return;
+      }
+
+      // Plot chronological order (oldest to newest)
+      const dataPoints = [...allSessions].reverse().slice(-20);
+      
+      const width = container.clientWidth || 800;
+      const height = 200;
+      const padding = 30;
+
+      const chartW = width - (padding * 2);
+      const chartH = height - (padding * 2);
+
+      let polyPoints = '';
+      let dotsHtml = '';
+      
+      dataPoints.forEach((s, idx) => {
+        const x = padding + (idx * (chartW / Math.max(dataPoints.length - 1, 1)));
+        const y = padding + chartH - ((s.averageScore / 100) * chartH);
+        
+        polyPoints += `${x},${y} `;
+        dotsHtml += `
+          <circle cx="${x}" cy="${y}" r="4" fill="var(--accent-primary)" stroke="#000" stroke-width="2" />
+          <text x="${x}" y="${y - 10}" fill="var(--text-secondary)" font-size="8" font-family="Space Grotesk" text-anchor="middle">${s.averageScore}%</text>
+        `;
+      });
+
+      const svgHtml = `
+        <svg width="100%" height="${height}">
+          <!-- Grid lines -->
+          <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="#1f1f1f" stroke-width="1" />
+          <line x1="${padding}" y1="${padding + (chartH/2)}" x2="${width - padding}" y2="${padding + (chartH/2)}" stroke="#1f1f1f" stroke-dasharray="4" />
+          <line x1="${padding}" y1="${padding + chartH}" x2="${width - padding}" y2="${padding + chartH}" stroke="#1f1f1f" stroke-width="1" />
+          
+          <!-- Axis labels -->
+          <text x="${padding - 8}" y="${padding + 4}" fill="var(--text-muted)" font-size="9" text-anchor="end">100</text>
+          <text x="${padding - 8}" y="${padding + (chartH/2) + 4}" fill="var(--text-muted)" font-size="9" text-anchor="end">50</text>
+          <text x="${padding - 8}" y="${padding + chartH + 4}" fill="var(--text-muted)" font-size="9" text-anchor="end">0</text>
+
+          <!-- Polyline Trend -->
+          <polyline fill="none" stroke="var(--accent-secondary)" stroke-width="3" points="${polyPoints.trim()}" />
+          ${dotsHtml}
+        </svg>
+      `;
+
+      container.innerHTML = svgHtml;
+    }
+
+    function renderWeeklyActivityGridHeatmap() {
+      const grid = document.getElementById('progress-heatmap-grid-el');
+      grid.innerHTML = '';
+
+      // Array of past 7 days
+      const days = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(now.getDate() - i);
+        days.push(d);
+      }
+
+      days.forEach(day => {
+        const dayStr = day.toISOString().split('T')[0];
+        const daySessions = allSessions.filter(s => {
+          const sDateStr = s.date && s.date.toDate ? s.date.toDate().toISOString().split('T')[0] : new Date(s.date).toISOString().split('T')[0];
+          return sDateStr === dayStr;
+        });
+
+        const card = document.createElement('div');
+        card.className = 'heatmap-day';
+        
+        let label = day.toLocaleDateString('en-US', { weekday: 'short' });
+        
+        if (daySessions.length > 1) {
+          card.classList.add('active-bright');
+        } else if (daySessions.length === 1) {
+          card.classList.add('active-light');
+        }
+
+        card.innerHTML = `
+          <span style="font-size:0.9rem; font-weight:700; color:#000;">${daySessions.length}</span>
+          <span class="heatmap-day-label">${label}</span>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderSkillBreakdownPerformanceTable() {
+      const body = document.getElementById('progress-skills-table-body');
+      body.innerHTML = '';
+
+      const matrix = {};
+      allSessions.forEach(s => {
+        if (!matrix[s.skill]) matrix[s.skill] = [];
+        matrix[s.skill].push(s);
+      });
+
+      const skillNames = Object.keys(matrix);
+      if (skillNames.length === 0) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No records found. Run mock interviews to populate statistics.</td></tr>';
+        return;
+      }
+
+      skillNames.forEach(skill => {
+        const list = matrix[skill];
+        const times = list.length;
+        const best = Math.max(...list.map(s => s.averageScore));
+        const avg = Math.round(list.reduce((acc, curr) => acc + curr.averageScore, 0) / times);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${skill}</strong></td>
+          <td>${times} sessions</td>
+          <td class="text-green">${best}%</td>
+          <td style="font-weight:600;">${avg}%</td>
+          <td>
+            <div class="skill-progress-bar" style="max-width:180px;">
+              <div class="skill-progress-fill" style="width: ${avg}%; background: var(--accent-secondary);"></div>
+            </div>
+          </td>
+        `;
+        body.appendChild(row);
+      });
+    }
+
+    function renderAIProgressInsightsList(avgPercent) {
+      const listEl = document.getElementById('progress-insights-list');
+      listEl.innerHTML = '';
+
+      if (allSessions.length === 0) {
+        listEl.innerHTML = '<li>Start practicing to unlock performance feedback.</li>';
+        return;
+      }
+
+      // Generate static programmatic rule insights
+      const pySessions = allSessions.filter(s => s.skill.toLowerCase().includes('python'));
+      if (pySessions.length >= 2) {
+        listEl.innerHTML += `<li>📈 You've completed ${pySessions.length} Python tracks. Continue practicing algorithm application challenges.</li>`;
+      }
+      
+      if (avgPercent >= 80) {
+        listEl.innerHTML += `<li>🏆 Excellent work! Your average score is ${avgPercent}%. Consider scaling up difficulty selections.</li>`;
+      } else if (avgPercent >= 60) {
+        listEl.innerHTML += `<li>🎯 Steady progress. Work on adding specific code syntaxes and code examples in explanation blocks.</li>`;
+      } else {
+        listEl.innerHTML += `<li>💡 Focus on structural foundations. Review and study the Model Answers in Results screen carefully.</li>`;
+      }
+
+      // Streak comment
+      if (userData && userData.streak >= 3) {
+        listEl.innerHTML += `<li>🔥 Active Prep! You have maintained a ${userData.streak} day streak. Keep the momentum going!</li>`;
+      }
+    }
+
+    // ==========================================
+    // VIEW 10 — LEADERBOARD RENDERING
+    // ==========================================
+    async function loadLeaderboardData() {
+      const body = document.getElementById('leaderboard-table-body');
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Loading rankings...</td></tr>';
+      
+      try {
+        if (!db) throw new Error("Firestore offline.");
+
+        const snapshot = await db.collection('users').orderBy('totalSessions', 'desc').limit(20).get();
+        const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        body.innerHTML = '';
+        users.forEach((user, index) => {
+          const row = document.createElement('tr');
+          
+          if (currentUser && user.id === currentUser.uid) {
+            row.className = 'leaderboard-row-highlight';
+          }
+
+          const initialsName = formatUserLeaderboardName(user.name);
+          const avgScore = user.totalSessions > 0 ? Math.round(user.totalScore / user.totalSessions) : 0;
+
+          row.innerHTML = `
+            <td>#${index + 1}</td>
+            <td><strong>${initialsName}</strong></td>
+            <td>${user.stream || 'General'}</td>
+            <td>${user.totalSessions || 0} sessions</td>
+            <td style="font-weight:600;">${avgScore}%</td>
+          `;
+          body.appendChild(row);
+        });
+
+        // Current user rank status
+        if (currentUser) {
+          const userIdx = users.findIndex(u => u.id === currentUser.uid);
+          const statusEl = document.getElementById('leaderboard-user-rank-status');
+          
+          if (userIdx !== -1) {
+            statusEl.innerHTML = `You are currently ranked <span class="text-green">#${userIdx + 1}</span> out of top candidates.`;
+          } else {
+            statusEl.innerHTML = `Complete sessions to climb onto the global ranking leaderboard.`;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not query leaderboard. Loading sandbox fallback mock metrics.", err);
+        // Sandboxed Mock Rankings
+        const mocks = [
+          { name: "John Doe", stream: "Computer Science", totalSessions: 42, totalScore: 3400 },
+          { name: "Madiha", stream: "Data Science", totalSessions: 38, totalScore: 3250 },
+          { name: "Sarah K.", stream: "MBA", totalSessions: 31, totalScore: 2600 },
+          { name: "Alex Mercer", stream: "Design", totalSessions: 18, totalScore: 1400 },
+          { name: "You (Candidate)", stream: userData ? userData.stream : "Computer Science", totalSessions: userData ? userData.totalSessions : 0, totalScore: userData ? userData.totalScore : 0, isSelf: true }
+        ];
+
+        // Sort
+        mocks.sort((a,b) => b.totalSessions - a.totalSessions);
+
+        body.innerHTML = '';
+        mocks.forEach((user, index) => {
+          const row = document.createElement('tr');
+          if (user.isSelf) row.className = 'leaderboard-row-highlight';
+
+          const avgScore = user.totalSessions > 0 ? Math.round(user.totalScore / user.totalSessions) : 0;
+          row.innerHTML = `
+            <td>#${index + 1}</td>
+            <td><strong>${user.name}</strong></td>
+            <td>${user.stream}</td>
+            <td>${user.totalSessions} sessions</td>
+            <td>${avgScore}%</td>
+          `;
+          body.appendChild(row);
+        });
+
+        document.getElementById('leaderboard-user-rank-status').innerHTML = "Sandbox Mode. Local dashboard rankings are mocked.";
+      }
+    }
+
+    function formatUserLeaderboardName(name) {
+      if (!name) return "Anonymous";
+      const parts = name.split(' ');
+      if (parts.length > 1) {
+        return `${parts[0]} ${parts[1][0]}.`;
+      }
+      return name;
+    }
+
+    // ==========================================
+    // VIEW 11 — SETTINGS CONTROLS & DANGER ZONE
+    // ==========================================
+    function loadSettingsViewData() {
+      if (!userData) return;
+      
+      document.getElementById('settings-name').value = userData.name;
+      document.getElementById('settings-email').value = userData.email;
+      document.getElementById('settings-stream').value = userData.stream;
+    }
+
+    async function saveProfileSettings(event) {
+      event.preventDefault();
+      
+      const newName = document.getElementById('settings-name').value.trim();
+      const newStream = document.getElementById('settings-stream').value;
+
+      showLoadingSpinner("Saving changes...");
+
+      try {
+        if (!db || !currentUser) throw new Error("Database reference missing.");
+
+        await db.collection('users').doc(currentUser.uid).update({
+          name: newName,
+          stream: newStream
+        });
+
+        await currentUser.updateProfile({ displayName: newName });
+        
+        // Sync structures
+        loadUserDataAndSync(currentUser.uid);
+      } catch (err) {
+        console.warn("Local storage fallback save.", err);
+        if (userData) {
+          userData.name = newName;
+          userData.stream = newStream;
+        }
+        updateSidebarUserProfileUI();
+        showToast("Profile updated locally.", "success");
+        hideLoadingSpinner();
+      }
+    }
+
+    async function saveSecuritySettings(event) {
+      event.preventDefault();
+
+      const currPass = document.getElementById('settings-currpass').value;
+      const newPass = document.getElementById('settings-newpass').value;
+      const confPass = document.getElementById('settings-confpass').value;
+
+      if (newPass.length < 6) {
+        showToast("New password must be at least 6 characters.", "warning");
+        return;
+      }
+
+      if (newPass !== confPass) {
+        showToast("New passwords do not match.", "warning");
+        return;
+      }
+
+      showLoadingSpinner("Re-authenticating...");
+
+      try {
+        if (!auth || !currentUser) throw new Error("Auth system offline.");
+
+        // Reauthenticate
+        const credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, currPass);
+        await currentUser.reauthenticateWithCredential(credential);
+        
+        await currentUser.updatePassword(newPass);
+        
+        // Clear fields
+        document.getElementById('settings-currpass').value = '';
+        document.getElementById('settings-newpass').value = '';
+        document.getElementById('settings-confpass').value = '';
+        
+        showToast("Password updated successfully!", "success");
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "Failed to update password. Verify credentials.", "error");
+      } finally {
+        hideLoadingSpinner();
+      }
+    }
+
+    function savePreferences() {
+      const hints = document.getElementById('pref-hints').checked;
+      const autosave = document.getElementById('pref-autosave').checked;
+      const offline = document.getElementById('pref-offline').checked;
+
+      const prefs = { hints, autosave, offline };
+      localStorage.setItem('prepai_preferences', JSON.stringify(prefs));
+      showToast("Preferences auto-saved.", "success");
+    }
+
+    function loadPreferencesFromLocalStorage() {
+      const local = localStorage.getItem('prepai_preferences');
+      if (local) {
+        try {
+          const prefs = JSON.parse(local);
+          document.getElementById('pref-hints').checked = !!prefs.hints;
+          document.getElementById('pref-autosave').checked = !!prefs.autosave;
+          document.getElementById('pref-offline').checked = !!prefs.offline;
+        } catch(e) {
+          console.warn("Prefs read failure.", e);
+        }
+      }
+    }
+
+    function triggerDeleteAccountModal() {
+      showAppModal(
+        "Permanently Delete Account?",
+        "WARNING: This action is irreversible. All practice session records, logs, and account authentication parameters will be permanently erased.",
+        "Permanently Delete",
+        executeAccountDeletion
+      );
+    }
+
+    async function executeAccountDeletion() {
+      showLoadingSpinner("Deleting database structures...");
+      try {
+        if (!currentUser) throw new Error("No active user signed in.");
+
+        const uid = currentUser.uid;
+
+        // Delete sessions history in Firestore
+        if (db) {
+          const snap = await db.collection('sessions').where('userId', '==', uid).get();
+          const batch = db.batch();
+          snap.docs.forEach(doc => batch.delete(doc.ref));
+          await batch.commit();
+
+          // Delete user doc
+          await db.collection('users').doc(uid).delete();
+        }
+
+        // Delete user auth parameters
+        await currentUser.delete();
+        showToast("Account deleted successfully.", "info");
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "Deletion failed. Try logging in again before attempting deletion.", "error");
+      } finally {
+        hideLoadingSpinner();
+      }
+    }
+
+    // ==========================================
+    // GOOGLE GEMINI MODEL GENERATIVE FETCH LOGIC
+    // ==========================================
+    async function fetchGeminiContent(promptText) {
+      if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+        return getMockGeminiResponse(promptText);
+      }
+
+      const models = [
+        'gemini-1.5-flash-8b',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest'
+      ];
+
+      for (const model of models) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 12000);
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: { temperature: 0.5, maxOutputTokens: 1500, topP: 0.8 }
+            })
+          });
+          clearTimeout(tid);
+          if (res.status === 429 || res.status === 404 || res.status === 503) { continue; }
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!text) throw new Error("Empty response");
+          return text;
+        } catch (e) {
+          clearTimeout(tid);
+          console.warn(`${model} failed:`, e.message);
+        }
+      }
+
+      console.warn("All Gemini endpoints failed, using mock");
+      showToast("Running in offline mock mode", "warning");
+      return getMockGeminiResponse(promptText);
+    }
+
+
+    function cleanAndParseJSON(rawText) {
+      let cleaned = rawText.trim();
+      
+      // Strip markdown codeblocks
+      if (cleaned.startsWith('```')) {
+        cleaned = cleaned.replace(/^```(json)?/, '').replace(/```$/, '').trim();
+      }
+      
+      return JSON.parse(cleaned);
+    }
+
+    // ==========================================
+    // LANDING DYNAMIC CANVAS PARTICLES SYSTEM
+    // ==========================================
+    function initLandingParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      let animationFrameId;
+
+      function resize() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight || 700;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const dots = [];
+      const numDots = 40;
+      
+      for(let i=0; i<numDots; i++) {
+        dots.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 2 + 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+        
+        dots.forEach(dot => {
+          dot.x += dot.vx;
+          dot.y += dot.vy;
+
+          if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+          if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        animationFrameId = requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Clean up anims when landing is unmounted
+      const observer = new MutationObserver((mutations) => {
+        const landing = document.getElementById('view-landing');
+        if (landing && landing.style.display === 'none') {
+          cancelAnimationFrame(animationFrameId);
+        }
+      });
+      observer.observe(document.getElementById('view-landing'), { attributes: true, attributeFilter: ['style'] });
+    }
+
+    function populateMarqueeTicker() {
+      const track = document.getElementById('ticker-track-el');
+      if (!track) return;
+
+      const skills = [...ALL_SKILLS, ...ALL_SKILLS]; // Duplicate to loop
+      track.innerHTML = '';
+      skills.forEach(sk => {
+        const div = document.createElement('div');
+        div.className = 'ticker-item';
+        div.textContent = sk;
+        track.appendChild(div);
+      });
+    }
+
+    // ==========================================
+    // UTILS & HELPERS
+    // ==========================================
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ==========================================
+    // MOCK GEMINI RESPONSES FALLBACKS
+    // ==========================================
+    function getMockGeminiResponse(promptText) {
+      console.warn("Google Gemini API key placeholder remains active or failed. Generating mock results.");
+
+      // Check if prompt is a question explanation request
+      if (promptText.includes('Explain this interview question simply') || promptText.includes('Breakdown complex terminologies')) {
+        const skill = (currentSession && currentSession.skill) || "Software Development";
+        return `Here is a simple breakdown of the question:
+
+### Core Concept:
+This question tests your understanding of core concepts in ${skill}. In production environments, it is important to handle this correctly to ensure optimal performance, thread-safety, and secure resource consumption.
+
+### How to tackle it:
+1. **Define the terms**: Start by clarifying the definition of the concept.
+2. **Implementation**: Give a quick explanation of how it is used in practice.
+3. **Trade-offs**: Discuss complexity, memory overhead, or alternatives.`;
+      }
+
+      // Check if prompt is an answer evaluation request
+      if (promptText.includes('evaluating an interview answer') || promptText.includes('Candidate\'s Answer')) {
+        return JSON.stringify({
+          score: 8,
+          verdict: "Good",
+          strengths: ["Clear terminology usage.", "Structured explanation framework."],
+          improvements: ["Expand on architectural trade-offs.", "Include a concrete production example."],
+          modelAnswer: "A comprehensive answer should define the core components, mention standard libraries, and detail performance complexity.",
+          tip: "Practice writing code snippets under time pressure."
+        });
+      }
+
+      // Check if prompt is for the chatbot companion assistant
+      if (promptText.includes('helpful interview coach') || promptText.includes('candidate asks')) {
+        const msgMatch = promptText.match(/candidate asks: "([^"]+)"/i);
+        const msg = msgMatch ? msgMatch[1].toLowerCase() : "";
+        const skill = (currentSession && currentSession.skill) || "Software Development";
+
+        if (msg.includes('mistake') || msg.includes('error') || msg.includes('wrong')) {
+          return `Common mistakes when answering this type of question in ${skill} include:
+1. Confusing it with similar concepts in the ecosystem.
+2. Forgetting to mention the time/space complexity implications.
+3. Not linking the explanation back to real-world application trade-offs or scalability.`;
+        }
+
+        if (msg.includes('example') || msg.includes('sample') || msg.includes('code')) {
+          return `Here is an example structure to answer this:
+- **Definition**: Briefly describe the term or component.
+- **Example**: Mention a scenario in ${skill} where this is used.
+- **Key point**: Explain the advantage (e.g. speed, memory, scaling).`;
+        }
+
+        if (msg.includes('structure') || msg.includes('format') || msg.includes('how to')) {
+          return `To structure your answer:
+1. **Direct Answer**: Start with a single summary sentence.
+2. **Detailed Breakdown**: Explain the underlying mechanism.
+3. **Practical Context**: Mention how it is applied in ${skill} projects.`;
+        }
+
+        // Generic reply
+        return `That's a great question regarding this topic. When studying ${skill}, keep in mind that understanding the underlying resource lifecycle and performance trade-offs is key. Do you want me to give you a structural template, list common mistakes, or provide an example?`;
+      }
+      
+      const MOCK_QUESTIONS_BY_SKILL = {
+        "python": [
+          "What is the difference between a list and a tuple in Python? When would you use one over the other?",
+          "Explain Python's GIL (Global Interpreter Lock) and how it affects multi-threaded programs.",
+          "How do decorators work in Python? Write a simple execution-time decorator.",
+          "What is the difference between deep copy and shallow copy in Python?",
+          "Explain memory management in Python, specifically reference counting and garbage collection."
+        ],
+        "javascript": [
+          "What is a closure in JavaScript? Explain with a practical code example.",
+          "Explain event delegation and event bubbling in the browser DOM.",
+          "What is the difference between let, const, and var?",
+          "How do Promises work, and what are the advantages of async/await over raw Promises?",
+          "What is the Event Loop in JavaScript? Explain call stack, task queue, and microtask queue."
+        ],
+        "react": [
+          "What is the Virtual DOM and how does React optimize rendering performance?",
+          "Explain the React component lifecycle and hook equivalents for class methods.",
+          "What is the difference between state and props in React?",
+          "How does React's Context API work, and when should you use it over a state manager like Redux?",
+          "What are React Hooks rules, and how does the useEffect hook track dependencies?"
+        ],
+        "sql": [
+          "What is the difference between INNER JOIN, LEFT JOIN, RIGHT JOIN, and OUTER JOIN?",
+          "Explain database normalization (1NF, 2NF, 3NF) and why it is important.",
+          "What are database indexes, how do they work, and what are their write performance costs?",
+          "Explain ACID properties of a database transaction with examples.",
+          "What is the difference between GROUP BY and WHERE clauses?"
+        ],
+        "dsa": [
+          "Explain the difference between an Array and a Linked List. What are the time complexities for search and insert?",
+          "How does Binary Search work? What is its time complexity and prerequisite conditions?",
+          "What is a Hash Table and how are collisions resolved (e.g. chaining vs. open addressing)?",
+          "Describe the difference between Depth First Search (DFS) and Breadth First Search (BFS) on trees.",
+          "What is QuickSort? Explain its average and worst-case time complexities."
+        ],
+        "system design": [
+          "How would you design a distributed, real-time message broadcasting platform like WhatsApp?",
+          "How would you design a rate limiter for a public API endpoint?",
+          "Explain horizontal scaling vs. vertical scaling and how database sharding works.",
+          "What is Content Delivery Network (CDN) caching, and how does cache invalidation function?",
+          "Design a URL shortening service like Bitly."
+        ],
+        "node.js": [
+          "How does Node.js handle concurrency if JavaScript is single-threaded?",
+          "What is the difference between setImmediate() and process.nextTick()?",
+          "Explain stream buffers in Node.js and why they are useful for large files.",
+          "How does middleware architecture work in Express.js?",
+          "What is the purpose of package-lock.json in Node.js package management?"
+        ],
+        "aws": [
+          "What is the difference between AWS EC2, ECS, and Lambda serverless computing?",
+          "Explain AWS S3 storage classes and how lifecycle policies can reduce cost.",
+          "What is Amazon VPC (Virtual Private Cloud) and the difference between public and private subnets?",
+          "How does AWS IAM (Identity and Access Management) protect resource access policies?",
+          "Explain AWS Auto Scaling and Elastic Load Balancing (ELB) synergy."
+        ],
+        "communication": [
+          "Describe a situation where you had to explain a complex technical concept to a non-technical stakeholder.",
+          "How do you handle disagreement or conflict within a project team?",
+          "Tell me about a time you had to deliver critical constructive feedback to a teammate.",
+          "How do you structure status updates for leadership vs. your direct peers?",
+          "Describe a time when a project requirement was ambiguous and how you resolved the clarity issue."
+        ],
+        "leadership": [
+          "How do you prioritize competing deadlines or resource conflicts across multiple projects?",
+          "Describe a time you mentored a junior team member. What was your approach and outcome?",
+          "How do you align a team around a shared vision or goal when there is skepticism?",
+          "Tell me about a time you made a difficult decision that was unpopular with the team.",
+          "How do you foster an inclusive environment that encourages creative risk-taking?"
+        ]
+      };
+
+      if (promptText.includes('generate exactly') || promptText.includes('expert technical interviewer')) {
+        const countMatch = promptText.match(/generate exactly (\d+)/i);
+        const count = countMatch ? parseInt(countMatch[1]) : 5;
+        const skill = (practiceSelectedSkill || "Software Development").trim();
+        const skillKey = skill.toLowerCase();
+        
+        if (promptText.includes('Multiple Choice') || promptText.includes('MCQ') || practiceType === 'MCQ') {
+          const MCQ_BANKS = {
+            "python": [
+              {
+                question: "Which of the following data types in Python is mutable?",
+                options: ["tuple", "list", "str", "int"],
+                correctAnswer: 1,
+                explanation: "Lists are mutable in Python; their contents can be modified in-place. Tuples, strings, and integers are immutable."
+              },
+              {
+                question: "What is the primary function of Python's Global Interpreter Lock (GIL)?",
+                options: [
+                  "To optimize memory garbage collection processes.",
+                  "To prevent multiple threads from executing Python bytecodes at once.",
+                  "To compile source code into machine instructions.",
+                  "To manage network socket connections dynamically."
+                ],
+                correctAnswer: 1,
+                explanation: "The GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecodes at once."
+              },
+              {
+                question: "Which of the following returns the index of the first occurrence of an item in a list in Python?",
+                options: ["list.index(item)", "list.find(item)", "list.search(item)", "list.locate(item)"],
+                correctAnswer: 0,
+                explanation: "The index() method returns the first index of the matching element."
+              },
+              {
+                question: "What does the '__init__' method do in Python classes?",
+                options: [
+                  "Deletes an instantiated object from memory.",
+                  "Serves as the constructor to initialize new objects.",
+                  "Imports a modular package inside class definition.",
+                  "Declares static variables inside class functions."
+                ],
+                correctAnswer: 1,
+                explanation: "__init__ is the initializer method automatically run when a new class instance is created."
+              },
+              {
+                question: "Which keyword is used to handle exceptions inside try blocks in Python?",
+                options: ["catch", "except", "error", "handle"],
+                correctAnswer: 1,
+                explanation: "Python uses 'except' to catch exceptions, unlike other programming languages that use 'catch'."
+              }
+            ],
+            "javascript": [
+              {
+                question: "Which keyword declares a block-scoped variable that cannot be reassigned?",
+                options: ["var", "let", "const", "fixed"],
+                correctAnswer: 2,
+                explanation: "const declares a block-scoped variable that cannot be reassigned."
+              },
+              {
+                question: "What does 'typeof null' return in JavaScript?",
+                options: ["'null'", "'undefined'", "'object'", "'empty'"],
+                correctAnswer: 2,
+                explanation: "This is a long-standing bug in JavaScript where null is classified as an object."
+              },
+              {
+                question: "Which method converts a JSON string into a JavaScript object?",
+                options: ["JSON.stringify()", "JSON.parse()", "JSON.toObject()", "JSON.convert()"],
+                correctAnswer: 1,
+                explanation: "JSON.parse() deserializes a JSON string into a JavaScript value or object."
+              },
+              {
+                question: "What is event delegation in JavaScript?",
+                options: [
+                  "Assigning events to child elements individually.",
+                  "Binding a single listener to a parent element to handle events on children.",
+                  "Canceling event propagation across the browser DOM tree.",
+                  "Creating custom events manually using Event constructors."
+                ],
+                correctAnswer: 1,
+                explanation: "Event delegation leverages event bubbling to listen to child clicks by attaching a single listener to a parent node."
+              },
+              {
+                question: "Which function executes a callback block repeatedly at specific time intervals?",
+                options: ["setTimeout", "setInterval", "setPeriod", "loopInterval"],
+                correctAnswer: 1,
+                explanation: "setInterval repeatedly executes a callback function with a fixed time delay between each call."
+              }
+            ],
+            "react": [
+              {
+                question: "Which Hook is used to handle side-effects in React functional components?",
+                options: ["useState", "useEffect", "useReducer", "useCallback"],
+                correctAnswer: 1,
+                explanation: "useEffect lets functional components perform API calls, subscriptions, and other DOM changes (side-effects)."
+              },
+              {
+                question: "What is the purpose of the 'key' prop when rendering lists in React?",
+                options: [
+                  "To secure the components from cross-site scripting inputs.",
+                  "To help React identify which items have changed, been added, or removed.",
+                  "To bind styles directly to rendered array nodes.",
+                  "To inherit state values from parent rendering grids."
+                ],
+                correctAnswer: 1,
+                explanation: "Keys help React identify items uniquely to optimize diffing and DOM node reuse."
+              },
+              {
+                question: "Which hook retrieves context values without using context consumers?",
+                options: ["useContext", "useProp", "useStore", "useConsumer"],
+                correctAnswer: 0,
+                explanation: "useContext accepts a context object and returns the current context value."
+              },
+              {
+                question: "What is the Virtual DOM in React?",
+                options: [
+                  "A physical copy of browser native DOM nodes.",
+                  "An in-memory representation of the real DOM tree used to optimize rendering updates.",
+                  "A design framework that renders layouts inside HTML canvas views.",
+                  "An external database system that caches HTML pages."
+                ],
+                correctAnswer: 1,
+                explanation: "The Virtual DOM is a representation of the UI kept in memory and synced with the real DOM via reconciliation."
+              },
+              {
+                question: "How do you define default values for props in React?",
+                options: ["Component.defaultProps", "Component.props", "Component.defaults", "Component.fallbackProps"],
+                correctAnswer: 0,
+                explanation: "defaultProps can be defined as a property on the component class/function to set default props."
+              }
+            ],
+            "sql": [
+              {
+                question: "Which SQL clause filters groups created by GROUP BY?",
+                options: ["WHERE", "HAVING", "ORDER BY", "SELECT"],
+                correctAnswer: 1,
+                explanation: "HAVING filters groups of rows defined by the GROUP BY clause, whereas WHERE filters individual rows."
+              },
+              {
+                question: "Which join returns all rows from the left table and matched rows from the right table?",
+                options: ["INNER JOIN", "RIGHT JOIN", "LEFT JOIN", "FULL JOIN"],
+                correctAnswer: 2,
+                explanation: "A LEFT JOIN (or LEFT OUTER JOIN) returns all records from the left table and matched records from the right table."
+              },
+              {
+                question: "What does the ACID transaction property 'Durability' guarantee?",
+                options: [
+                  "Transactions execute simultaneously without interference.",
+                  "Transactions leave the database in a consistent state.",
+                  "Committed transaction changes are persisted even during crash failures.",
+                  "All transaction steps succeed or none do."
+                ],
+                correctAnswer: 2,
+                explanation: "Durability ensures that once a transaction is committed, its changes survive system outages or failures."
+              },
+              {
+                question: "Which index type is best for range queries like BETWEEN?",
+                options: ["Hash Index", "B-Tree Index", "Bitmap Index", "Spatial Index"],
+                correctAnswer: 1,
+                explanation: "B-Tree indexes maintain sorted values, making them optimal for equality and range query filters."
+              },
+              {
+                question: "Which keyword removes duplicate rows from SELECT outputs?",
+                options: ["UNIQUE", "DISTINCT", "DIFFERENT", "SINGLE"],
+                correctAnswer: 1,
+                explanation: "DISTINCT is used to return only unique values from table queries."
+              }
+            ]
+          };
+
+          let activeMCQPool = MCQ_BANKS[skillKey];
+          if (!activeMCQPool) {
+            const matchedKey = Object.keys(MCQ_BANKS).find(k => skillKey.includes(k) || k.includes(skillKey));
+            activeMCQPool = matchedKey ? MCQ_BANKS[matchedKey] : null;
+          }
+
+          const list = [];
+          for (let i = 1; i <= count; i++) {
+            let mcq = null;
+            if (activeMCQPool && activeMCQPool[(i - 1) % activeMCQPool.length]) {
+              mcq = activeMCQPool[(i - 1) % activeMCQPool.length];
+            } else {
+              mcq = {
+                question: `Mock Multiple Choice Question #${i} for ${skill}: What is the primary design pattern recommended to handle scalability constraints in ${skill}?`,
+                options: [
+                  "Model-View-Controller decoupled pattern",
+                  "Distributed microservices with queue scaling",
+                  "Monolithic synchronous execution blocks",
+                  "Client-side local caching variables only"
+                ],
+                correctAnswer: 1,
+                explanation: "Distributed microservices with queue scaling allows decoupling load peaks from databases."
+              };
+            }
+            list.push({
+              id: i,
+              question: mcq.question,
+              options: mcq.options,
+              correctAnswer: mcq.correctAnswer,
+              hint: "Read option labels carefully, keeping modular design patterns in mind.",
+              explanation: mcq.explanation,
+              category: i % 2 === 0 ? "application" : "concept"
+            });
+          }
+          return JSON.stringify(list);
+        }
+
+        let questionsPool = MOCK_QUESTIONS_BY_SKILL[skillKey];
+        if (!questionsPool) {
+          // Look for partial matches
+          const matchedKey = Object.keys(MOCK_QUESTIONS_BY_SKILL).find(k => skillKey.includes(k) || k.includes(skillKey));
+          questionsPool = matchedKey ? MOCK_QUESTIONS_BY_SKILL[matchedKey] : null;
+        }
+
+        const list = [];
+        for(let i=1; i<=count; i++) {
+          let qText = "";
+          let hintText = "Try structures that decouple code or improve algorithmic complexity.";
+          let expectedPoints = ["Efficiency", "Robustness", "Clean code"];
+
+          if (questionsPool && questionsPool[i - 1]) {
+            qText = questionsPool[i - 1];
+            hintText = "Mention core parameters, structures, or standard implementation libraries.";
+            expectedPoints = ["Conceptual definition", "Implementation example", "Trade-offs"];
+          } else {
+            qText = `Mock Scenario Question #${i} for ${skill}: How do you approach designing, scaling, and debugging a production service configured with ${skill}?`;
+            hintText = `Explain concrete performance profiles and common bugs associated with ${skill}.`;
+            expectedPoints = ["Architecture definition", "Error-handling protocols", "Scalability solutions"];
+          }
+
+          list.push({
+            id: i,
+            question: qText,
+            hint: hintText,
+            category: i % 2 === 0 ? "application" : "concept",
+            expectedKeyPoints: expectedPoints
+          });
+        }
+        return JSON.stringify(list);
+      }
+      
+      if (promptText.includes('evaluating an interview answer')) {
+        const answerMatch = promptText.match(/Candidate's Answer:\s*"([\s\S]*?)"/i) || promptText.match(/Answer:\s*"([\s\S]*?)"/i);
+        const answer = answerMatch ? answerMatch[1] : "";
+        const questionMatch = promptText.match(/Question:\s*"([\s\S]*?)"/i);
+        const question = questionMatch ? questionMatch[1].replace(/[\"\']/g, "") : "the question";
+        
+        let score = 5;
+        let verdict = "Average";
+        if (!answer || answer.toLowerCase().includes("[skipped]")) {
+          score = 0;
+          verdict = "Poor";
+        } else if (answer.length > 150) {
+          score = 9;
+          verdict = "Excellent";
+        } else if (answer.length > 60) {
+          score = 7;
+          verdict = "Good";
+        }
+        
+        let strengths = ["Provided a response addressing the question directly.", "Clear language structure without confusing terms."];
+        let improvements = ["Could support points with code snippets or detailed diagrams.", "Expand on concrete edge-cases."];
+        
+        if (score >= 8) {
+          strengths.push("Excellent explanation depth.");
+          strengths.push("Direct answer to expected key points.");
+        } else {
+          improvements.push("Elaborate on production-level scalability options.");
+        }
+
+        return JSON.stringify({
+          score: score,
+          verdict: verdict,
+          strengths: strengths,
+          improvements: improvements,
+          modelAnswer: `A comprehensive answer for: "${question}" should define the core principles, provide concrete coding/structural examples, and outline performance trade-offs under heavy loads.`,
+          tip: "Use the STAR framework (Situation, Task, Action, Result) to format your responses for situational questions."
+        });
+      }
+
+      if (promptText.includes('Explain this interview question simply')) {
+        return "The question is testing your practical and theoretical awareness of this topic. Structure your response starting with a simple definition, then give a code or real-world example, and finish with a comparison of alternatives.";
+      }
+
+      return "Ensure you structure your response using clear bullet points. Highlight memory complexities and tool chain dependencies where applicable.";
+    }
+  
+</script>
+</body>
+</html>

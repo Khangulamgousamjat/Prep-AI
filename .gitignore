@@ -1,0 +1,19 @@
+# Environment variables — DO NOT COMMIT
+.env
+
+# Python helper scripts (dev only)
+_*.py
+_*.js
+_*.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.suo
+*.user
+
+# Logs
+*.log
