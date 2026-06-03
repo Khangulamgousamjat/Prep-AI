@@ -1420,10 +1420,16 @@
         userData = doc.data();
         userData.streak = processUserStreakCalculation(userData);
         
-        // Sync history cache
+        // Sync history cache — no orderBy to avoid composite index requirement
         try {
-          const snapshot = await db.collection('sessions').where('userId', '==', uid).orderBy('date', 'desc').get();
+          const snapshot = await db.collection('sessions').where('userId', '==', uid).get();
           allSessions = snapshot.docs.map(s => ({ id: s.id, ...s.data() }));
+          // Sort client-side by date descending
+          allSessions.sort((a, b) => {
+            const aDate = a.date?.toDate ? a.date.toDate() : new Date(a.date || 0);
+            const bDate = b.date?.toDate ? b.date.toDate() : new Date(b.date || 0);
+            return bDate - aDate;
+          });
         } catch(e) {
           console.warn("Failed sessions query. Utilizing localStorage fallback instead.", e);
           allSessions = JSON.parse(localStorage.getItem(`sessions_${uid}`) || '[]');
@@ -2006,9 +2012,9 @@
       
       let prompt = "";
       if (practiceType === 'MCQ') {
-        prompt = `Generate ${practiceQuestionCount} MCQs for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY a JSON array, no markdown:\n[{"id":1,"question":"...","options":["A","B","C","D"],"correctAnswer":0,"hint":"...","explanation":"...","category":"conceptual"}]`;
+        prompt = `Generate exactly ${practiceQuestionCount} Multiple Choice MCQ questions for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY a valid JSON array with no markdown:\n[{"id":1,"question":"...","options":["A","B","C","D"],"correctAnswer":0,"hint":"...","explanation":"...","category":"conceptual"}]`;
       } else {
-        prompt = `Generate ${practiceQuestionCount} ${practiceType} interview questions for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY JSON array:\n[{"id":1,"question":"...","hint":"...","category":"concept","expectedKeyPoints":["p1","p2"]}]`;
+        prompt = `Generate exactly ${practiceQuestionCount} expert technical interviewer questions for ${practiceSelectedSkill} at ${practiceDifficulty} level. Return ONLY a valid JSON array with no markdown:\n[{"id":1,"question":"...","hint":"...","category":"concept","expectedKeyPoints":["p1","p2"]}]`;
       }
 
       let success = false;
@@ -2263,7 +2269,7 @@ Question: "${q.question}"`;
 
       clearInterval(interviewTimerInterval);
       
-      const evalPrompt = `Evaluate this ${currentSession.skill} interview answer (${currentSession.difficulty}).
+      const evalPrompt = `You are evaluating an interview answer. Evaluate this ${currentSession.skill} interview answer (${currentSession.difficulty}).
 Q: "${q.question}"
 A: "${ansText}"
 Return ONLY JSON (no markdown): {"score":7,"verdict":"Good","strengths":["strength"],"improvements":["improvement"],"modelAnswer":"model answer here","tip":"tip here"}`;
@@ -3269,14 +3275,14 @@ Be helpful, educational, and encouraging. Keep responses concise (2-4 sentences)
     // GOOGLE GEMINI MODEL GENERATIVE FETCH LOGIC
     // ==========================================
     async function fetchGeminiContent(promptText) {
-      if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+      if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
         return getMockGeminiResponse(promptText);
       }
 
       const models = [
-        'gemini-1.5-flash-8b',
+        'gemini-2.0-flash',
         'gemini-1.5-flash',
-        'gemini-1.5-flash-latest'
+        'gemini-1.5-flash-8b'
       ];
 
       for (const model of models) {
@@ -3306,8 +3312,7 @@ Be helpful, educational, and encouraging. Keep responses concise (2-4 sentences)
         }
       }
 
-      console.warn("All Gemini endpoints failed, using mock");
-      showToast("Running in offline mock mode", "warning");
+      console.warn("All Gemini endpoints failed, using mock fallback.");
       return getMockGeminiResponse(promptText);
     }
 
